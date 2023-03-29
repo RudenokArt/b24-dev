@@ -14,7 +14,6 @@ class CBPdeal_award extends CBPActivity {
     ], [
       'ID',
       'ASSIGNED_BY_ID',
-      'OPPORTUNITY',
       'UF_CRM_DEAL_AWARD_TYPE',
       'UF_CRM_DEAL_AWARD_SIZE',
     ]);
@@ -27,7 +26,6 @@ class CBPdeal_award extends CBPActivity {
       while ($prod = $src_prod->Fetch()) {
         $amount = $amount + $prod['PRICE'] * $prod['QUANTITY'];
       }
-      $row['products'] = $products;
       $row['amount'] = $amount;
     }
 
