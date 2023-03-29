@@ -1,8 +1,8 @@
 <?
 
-Class deal_award extends CModule
+Class art_r_deal_award extends CModule
 {
-  var $MODULE_ID = "deal_award";
+  var $MODULE_ID = "art_r.deal_award";
   var $MODULE_VERSION;
   var $MODULE_VERSION_DATE;
   var $MODULE_NAME;
@@ -29,14 +29,17 @@ Class deal_award extends CModule
 
   function InstallFiles()
   {
-    CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/deal_award/install/components",
+    CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/art_r.deal_award/install/components",
      $_SERVER["DOCUMENT_ROOT"]."/local/components", true, true);
+    CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/art_r.deal_award/install/activities/custom",
+     $_SERVER["DOCUMENT_ROOT"]."/local/activities/custom", true, true);
     return true;
   }
 
   function UnInstallFiles()
   {
     DeleteDirFilesEx("/local/components/art_r/deal_award/");
+    DeleteDirFilesEx("/local/activities/custom/deal_award/");
     return true;
   }
 
@@ -46,8 +49,8 @@ Class deal_award extends CModule
     $this->InstallFiles();
     $this->InstalDealFields();
     $this->InstalDealAwardTable();
-    RegisterModule("deal_award");
-    $APPLICATION->IncludeAdminFile("installing the module deal_award", $DOCUMENT_ROOT."/local/modules/deal_award/install/step.php");
+    RegisterModule($this->MODULE_ID);
+    $APPLICATION->IncludeAdminFile("installing the module deal_award", $DOCUMENT_ROOT."/local/modules/art_r.deal_award/install/step.php");
   }
 
   function DoUninstall()
@@ -56,8 +59,8 @@ Class deal_award extends CModule
     $this->UnInstallFiles();
     $this->UnInstalDealFields();
     $this->UnInstalDealAwardTable();
-    UnRegisterModule("deal_award");
-    $APPLICATION->IncludeAdminFile("Uninstalling the module deal_award", $DOCUMENT_ROOT."/local/modules/deal_award/install/unstep.php");
+    UnRegisterModule($this->MODULE_ID);
+    $APPLICATION->IncludeAdminFile("Uninstalling the module deal_award", $DOCUMENT_ROOT."/local/modules/art_r.deal_award/install/unstep.php");
   }
 
   function InstalDealAwardTable () {
@@ -93,7 +96,7 @@ Class deal_award extends CModule
 
     $obUserField->Add([
       "ENTITY_ID" => "HLBLOCK_".$hl_id,
-      "FIELD_NAME" => "UF_AWARD_AMOUNT",
+      "FIELD_NAME" => "UF_DEAL_AMOUNT",
       "USER_TYPE_ID" => "integer",
     ]);
   }
