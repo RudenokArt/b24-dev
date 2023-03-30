@@ -9,6 +9,9 @@ class CBPdeal_award extends CBPActivity {
   }
 
   public function Execute () {
+    // [$typeName, $id] = explode('_', $this->GetDocumentId()[2]);
+
+    // $this->test = $this->GetDocumentId();
 
     $src = CCrmDeal::GetList([], [
       'ID' => $this->deal_id,
@@ -78,6 +81,8 @@ class CBPdeal_award extends CBPActivity {
       'UF_DEAL_AMOUNT' => $row['amount'],
     ]);
     }
+    $row['test'] =$this->GetDocumentId();
+    file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($row));
   }
 
   public static function GetPropertiesDialog($documentType, $activityName,
