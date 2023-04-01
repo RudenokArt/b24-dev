@@ -2,6 +2,6 @@
 <tr>
   <td>deal ID {{ID}}</td>
 <td>
-  <input type="text" value="{{ID}}" name="deal_id">
+  <input type="text" value="" name="deal_id">
 </td>
 </tr>

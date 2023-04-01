@@ -7,10 +7,7 @@ foreach ($arResult->itemsList as $key => $value) {
         "ID" => $value['ID'],
         "USER_ID" => $value['UF_USER_ID'],
         "DEAL_ID" => $value['UF_DEAL_ID'],
-        "AWARD_TYPE" => $value['UF_AWARD_TYPE'],
-        "AWARD_SIZE" => $value['UF_AWARD_SIZE'],
-        "DEAL_AMOUNT" => $value['UF_DEAL_AMOUNT'],
-        "AWARD_AMOUNT" => $value['AWARD_AMOUNT'],
+        "AWARD_AMOUNT" => $value['UF_AWARD_AMOUNT'],
       ],
         'actions' => [ //Действия над ними
         [
@@ -45,9 +42,6 @@ foreach ($arResult->itemsList as $key => $value) {
         ['id' => 'ID', 'name' => 'ID', 'sort' => 'ID', 'default' => true], 
         ['id' => 'USER_ID', 'name' => 'user id', 'sort' => 'USER_ID', 'default' => true], 
         ['id' => 'DEAL_ID', 'name' => 'deal id', 'sort' => 'DEAL_ID', 'default' => true],  
-        ['id' => 'AWARD_TYPE', 'name' => 'award type', 'sort' => 'AWARD_TYPE', 'default' => true], 
-        ['id' => 'AWARD_SIZE', 'name' => 'award size', 'sort' => 'AWARD_SIZE', 'default' => true],
-        ['id' => 'DEAL_AMOUNT', 'name' => 'deal amount', 'sort' => 'DEAL_AMOUNT', 'default' => true],
         ['id' => 'AWARD_AMOUNT', 'name' => 'award amount', 'sort' => 'AWARD_AMOUNT', 'default' => true],  
       ], 
       'ROWS' => $deal_award_items_list,

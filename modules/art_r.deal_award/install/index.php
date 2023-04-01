@@ -1,4 +1,6 @@
 <?
+use Bitrix\Main\Loader;
+Loader::IncludeModule('highloadblock');
 
 Class art_r_deal_award extends CModule
 {
@@ -47,7 +49,7 @@ Class art_r_deal_award extends CModule
   {
     global $DOCUMENT_ROOT, $APPLICATION;
     $this->InstallFiles();
-    $this->InstalDealFields();
+    $this->InstallProductFields();
     $this->InstalDealAwardTable();
     RegisterModule($this->MODULE_ID);
     $APPLICATION->IncludeAdminFile("installing the module deal_award", $DOCUMENT_ROOT."/local/modules/art_r.deal_award/install/step.php");
@@ -57,7 +59,7 @@ Class art_r_deal_award extends CModule
   {
     global $DOCUMENT_ROOT, $APPLICATION;
     $this->UnInstallFiles();
-    $this->UnInstalDealFields();
+    $this->UnInstallProductFields();
     $this->UnInstalDealAwardTable();
     UnRegisterModule($this->MODULE_ID);
     $APPLICATION->IncludeAdminFile("Uninstalling the module deal_award", $DOCUMENT_ROOT."/local/modules/art_r.deal_award/install/unstep.php");
@@ -84,19 +86,7 @@ Class art_r_deal_award extends CModule
 
     $obUserField->Add([
       "ENTITY_ID" => "HLBLOCK_".$hl_id,
-      "FIELD_NAME" => "UF_AWARD_TYPE",
-      "USER_TYPE_ID" => "string",
-    ]);
-
-    $obUserField->Add([
-      "ENTITY_ID" => "HLBLOCK_".$hl_id,
-      "FIELD_NAME" => "UF_AWARD_SIZE",
-      "USER_TYPE_ID" => "integer",
-    ]);
-
-    $obUserField->Add([
-      "ENTITY_ID" => "HLBLOCK_".$hl_id,
-      "FIELD_NAME" => "UF_DEAL_AMOUNT",
+      "FIELD_NAME" => "UF_AWARD_AMOUNT",
       "USER_TYPE_ID" => "integer",
     ]);
   }
@@ -110,66 +100,67 @@ Class art_r_deal_award extends CModule
     }
   }
 
-  function UnInstalDealFields () {
-    $field_id = CUserTypeEntity::GetList([], [
-      'ENTITY_ID' => 'CRM_DEAL',
-      'FIELD_NAME' => 'UF_CRM_DEAL_AWARD_SIZE',
-    ])->Fetch()['ID'];
-    $delete = (new CUserTypeEntity())->Delete($field_id);
+  function UnInstallProductFields () {
+   $option1 = CIBlockPropertyEnum::GetList([], [
+    'VALUE' => 'absolute',
+  ])->Fetch();
+   $delete1 = CIBlockPropertyEnum::Delete($option1['ID']);
 
-    $field_id = CUserTypeEntity::GetList([], [
-      'ENTITY_ID' => 'CRM_DEAL',
-      'FIELD_NAME' => 'UF_CRM_DEAL_AWARD_TYPE',
-    ])->Fetch()['ID'];
-    $delete = (new CUserTypeEntity())->Delete($field_id);
-  }
+   $option2 = CIBlockPropertyEnum::GetList([], [
+    'VALUE' => 'percent',
+  ])->Fetch();
+   $delete2 = CIBlockPropertyEnum::Delete($option2['ID']);
 
-  function InstalDealFields () {
-   $field_id = (new CUserTypeEntity())->Add([
-    'ENTITY_ID' => 'CRM_DEAL',
-    'FIELD_NAME' => 'UF_CRM_DEAL_AWARD_SIZE',
-    'USER_TYPE_ID' => 'integer',
-    'EDIT_FORM_LABEL' => [
-      'ru' => 'Размер премиальных',
-      'en' => 'Size of award',
-      'de' => 'Prämie Größe'
-    ]
-  ]);
+   $option3 = CIBlockPropertyEnum::GetList([], [
+    'VALUE' => 'difference',
+  ])->Fetch();
+   $delete3 = CIBlockPropertyEnum::Delete($option3['ID']);
 
-   $field_id = (new CUserTypeEntity())->Add([
-    'ENTITY_ID' => 'CRM_DEAL',
-    'FIELD_NAME' => 'UF_CRM_DEAL_AWARD_TYPE',
-    'USER_TYPE_ID' => 'enumeration',
-    'EDIT_FORM_LABEL' => [
-      'ru' => 'Тип премиальных',
-      'en' => 'Type of award',
-      'de' => 'Prämie Typ'
-    ]
-  ]);
+   $p_size = CIBlockProperty::GetList([
+    'CODE' => 'UF_CRM_DEAL_AWARD_SIZE'
+  ])->Fetch();
+   $delete_size = CIBlockProperty::Delete($p_size['ID']);
 
-   $arAddEnum['n1'] = array(
-      'XML_ID' => 'abs',//xml_id
-      'VALUE' => 'absolute',//значение
-      'DEF' => 'N',//по умолчанию
-      'SORT' => 500//сортировка
-    );
-
-   $arAddEnum['n2'] = array(
-      'XML_ID' => 'per',//xml_id
-      'VALUE' => 'percent',//значение
-      'DEF' => 'N',//по умолчанию
-      'SORT' => 500//сортировка
-    );
-
-   $arAddEnum['n3'] = array(
-      'XML_ID' => 'dif',//xml_id
-      'VALUE' => 'difference',//значение
-      'DEF' => 'N',//по умолчанию
-      'SORT' => 500//сортировка
-    );
-   $obEnum = new CUserFieldEnum();
-   $obEnum->SetEnumValues($field_id, $arAddEnum);
+   $p_type = CIBlockProperty::GetList([
+    'CODE' => 'UF_CRM_DEAL_AWARD_TYPE'
+  ])->Fetch();
+   $delete_type = CIBlockProperty::Delete($p_type['ID']);
  }
+
+ function InstallProductFields () {
+
+  $iblock_id = Bitrix\Main\Config\Option::get('crm', 'default_product_catalog_id');
+
+  $p_size = (new CIBlockProperty)->Add([
+    'NAME' => 'Deal award size',
+    'ACTIVE' => 'Y',
+    'SORT' => 500,
+    'CODE' => 'UF_CRM_DEAL_AWARD_SIZE',
+    'PROPERTY_TYPE' => 'N',
+    'IBLOCK_ID' => $iblock_id,
+  ]);
+
+  $p_type = (new CIBlockProperty)->Add([
+    'NAME' => 'Deal award type',
+    'ACTIVE' => 'Y',
+    'SORT' => 500,
+    'CODE' => 'UF_CRM_DEAL_AWARD_TYPE',
+    'PROPERTY_TYPE' => 'L',
+    'IBLOCK_ID' => $iblock_id,
+  ]);
+  $option1 = (new CIBlockPropertyEnum)->Add([
+    'PROPERTY_ID' => $p_type,
+    'VALUE' => 'absolute',
+  ]);
+  $option2 = (new CIBlockPropertyEnum)->Add([
+    'PROPERTY_ID' => $p_type,
+    'VALUE' => 'percent',
+  ]);
+  $option3 = (new CIBlockPropertyEnum)->Add([
+    'PROPERTY_ID' => $p_type,
+    'VALUE' => 'difference',
+  ]);
+}
 
 
 }

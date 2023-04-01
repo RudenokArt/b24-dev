@@ -9,76 +9,47 @@ class CBPdeal_award extends CBPActivity {
   }
 
   public function Execute () {
+    $deal_id = explode('_', $this->GetDocumentId()[2])[1];
 
-    $src = CCrmDeal::GetList([], [
-      'ID' => $this->deal_id,
+    $deal = CCrmDeal::GetList([], [
+      'ID' => $deal_id,
     ], [
       'ID',
       'ASSIGNED_BY_ID',
-      'UF_CRM_DEAL_AWARD_TYPE',
-      'UF_CRM_DEAL_AWARD_SIZE',
-    ]);
-
-    if($row = $src->Fetch()){
-
-      $src_prod = CCrmProductRow::GetList([], [
-        'OWNER_ID' => $this->deal_id,
-        'OWNER_TYPE' => 'D',
-      ], false, false, ['PRICE', 'QUANTITY']);
-
-      $amount = 0;
-      while ($prod = $src_prod->Fetch()) {
-        $amount = $amount + $prod['PRICE'] * $prod['QUANTITY'];
-      }
-
-      $row['amount'] = $amount;
-
-      $rsEnum = CUserFieldEnum::GetList([], ['ID' => $row['UF_CRM_DEAL_AWARD_TYPE']]);
-      $arEnum = $rsEnum->Fetch();
-      $row['award_type'] = $arEnum['VALUE'];
-    }
-
-    $this->saveAward($row);
-  }
-
-  function saveAward ($row) {
-    $hl = \Bitrix\Highloadblock\HighloadBlockTable::getList([
-      'filter'=>['TABLE_NAME' => 'deal_award',],
     ])->Fetch();
 
-    $entity = Bitrix\Highloadblock\HighloadBlockTable::compileEntity($hl);
-    $entity_data_class = $entity->getDataClass();
+    $src_prod_row = CCrmProductRow::GetList([], [
+      'OWNER_ID' => $deal_id,
+      'OWNER_TYPE' => 'D',
+    ], false, false, [
+      'ID',
+      'PRODUCT_ID',
+      'PRICE',
+      'QUANTITY',
+    ]);
+    while ($prod_row = $src_prod_row->Fetch()) {
+      $poroducts_id_arr[] = $prod_row['PRODUCT_ID'];
+      $deal['prod_row'][] = $prod_row;
+    }
+    $prod_catalog = Bitrix\Main\Config\Option::get('crm', 'default_product_catalog_id');
 
-    $rsData = $entity_data_class::getList([
-      'filter'=>[
-        'UF_DEAL_ID' => $row['ID'],
-      ],
+    $src_prod = CIBlockElement::GetList([], [
+      'ID' => $poroducts_id_arr,
+      'IBLOCK_ID' => $prod_catalog,
+    ], false, false, [
+      'ID',
+      'IBLOCK_ID',
+      'PROPERTY_UF_CRM_DEAL_AWARD_SIZE',
+      'PROPERTY_UF_CRM_DEAL_AWARD_TYPE'
     ]);
-    $delete = $rsData->Fetch();
-    if ($delete) {
-      $entity_data_class::delete($delete['ID']);
+    while ($prod = $src_prod->Fetch()) {
+      $deal['products'][] = $prod;
     }
-    
-    if (
-      (
-        $row['award_type'] == 'absolute'
-        or
-        $row['award_type'] == 'percent'
-        or
-        $row['award_type'] == 'difference'
-      )
-      and
-      $row['UF_CRM_DEAL_AWARD_SIZE'] > 0
-    ) {
-      $result = $entity_data_class::add([
-      'UF_DEAL_ID' => $row['ID'],
-      'UF_USER_ID' => $row['ASSIGNED_BY_ID'],
-      'UF_AWARD_TYPE' => $row['award_type'],
-      'UF_AWARD_SIZE' => $row['UF_CRM_DEAL_AWARD_SIZE'],
-      'UF_DEAL_AMOUNT' => $row['amount'],
-    ]);
-    }
-  }
+
+
+    file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($deal));
+  
+  }  
 
   public static function GetPropertiesDialog($documentType, $activityName,
     $arWorkflowTemplate,$arWorkflowParameters, $arWorkflowVariables,
