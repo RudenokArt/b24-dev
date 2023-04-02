@@ -89,6 +89,11 @@ Class art_r_deal_award extends CModule
       "FIELD_NAME" => "UF_AWARD_AMOUNT",
       "USER_TYPE_ID" => "integer",
     ]);
+    $obUserField->Add([
+      "ENTITY_ID" => "HLBLOCK_".$hl_id,
+      "FIELD_NAME" => "UF_AWARD_TIME",
+      "USER_TYPE_ID" => "integer",
+    ]);
   }
 
   function UnInstalDealAwardTable () {

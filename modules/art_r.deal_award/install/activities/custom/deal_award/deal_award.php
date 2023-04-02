@@ -55,7 +55,7 @@ class CBPdeal_award extends CBPActivity {
       if ($value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] and $value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE']) {
         $cost =  $deal['prod_row'][$key]['PRICE'] * $deal['prod_row'][$key]['QUANTITY'];
         if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'absolute') {
-          $award = $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'];
+          $award = $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] * $deal['prod_row'][$key]['QUANTITY'];
           $total = $total + $award;
         }
         if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'percent') {
@@ -63,7 +63,9 @@ class CBPdeal_award extends CBPActivity {
           $total = $total + $award;
         }
         if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'difference') {
-          $award = $cost - $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'];
+          $award = ($value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] 
+            - $deal['prod_row'][$key]['PRICE']
+          ) * $deal['prod_row'][$key]['QUANTITY'];
           $total = $total + $award;
         }
         
@@ -81,6 +83,8 @@ class CBPdeal_award extends CBPActivity {
 
   function awardSave ($deal) {
 
+    // file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($deal));
+    
     $hl = \Bitrix\Highloadblock\HighloadBlockTable::getList([
       'filter' => ['TABLE_NAME' => 'deal_award',],
       'select' => ['ID'],
@@ -103,67 +107,66 @@ class CBPdeal_award extends CBPActivity {
       'UF_USER_ID' => $deal['ASSIGNED_BY_ID'],
       'UF_DEAL_ID' => $deal['ID'],
       'UF_AWARD_AMOUNT' => $deal['AWARD_AMOUNT'],
+      'UF_AWARD_TIME' => time(),
     ]);
 
-   
-   file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode([$deal, $check]));
- }
+  }
 
- public static function GetPropertiesDialog($documentType, $activityName,
-  $arWorkflowTemplate,$arWorkflowParameters, $arWorkflowVariables,
-  $arCurrentValues = null, $formName = "")  {
-  $runtime = CBPRuntime::GetRuntime();
+  public static function GetPropertiesDialog($documentType, $activityName,
+    $arWorkflowTemplate,$arWorkflowParameters, $arWorkflowVariables,
+    $arCurrentValues = null, $formName = "")  {
+    $runtime = CBPRuntime::GetRuntime();
 
-  if (!is_array($arWorkflowParameters))
-    $arWorkflowParameters = array();
-  if (!is_array($arWorkflowVariables))
-    $arWorkflowVariables = array();
+    if (!is_array($arWorkflowParameters))
+      $arWorkflowParameters = array();
+    if (!is_array($arWorkflowVariables))
+      $arWorkflowVariables = array();
 
-  if (!is_array($arCurrentValues))
-  {
-    $arCurrentValues = array("deal_id" => "{{ID}}"); 
+    if (!is_array($arCurrentValues))
+    {
+      $arCurrentValues = array("deal_id" => "{{ID}}"); 
 
-    $arCurrentActivity= &CBPWorkflowTemplateLoader::FindActivityByName(
+      $arCurrentActivity= &CBPWorkflowTemplateLoader::FindActivityByName(
+        $arWorkflowTemplate,
+        $activityName
+      );
+      if (is_array($arCurrentActivity["Properties"]))
+        $arCurrentValues["deal_id "] =
+      $arCurrentActivity["Properties"]["deal_id"];
+    }
+    return $runtime->ExecuteResourceFile(
+      __FILE__,
+      "properties_dialog.php",
+      array(
+        "arCurrentValues" => $arCurrentValues,
+        "formName" => $formName,
+      )
+    );
+  }
+
+  public static function GetPropertiesDialogValues($documentType, $activityName, 
+    &$arWorkflowTemplate, &$arWorkflowParameters, &$arWorkflowVariables,
+    $arCurrentValues, &$arErrors) {
+    $arErrors = array();
+
+    $runtime = CBPRuntime::GetRuntime();
+
+    if (strlen($arCurrentValues["deal_id"]) <= 0) {
+      $arErrors[] = array(
+        "code" => "emptyCode",
+        "message" => GetMessage("MYACTIVITY_EMPTY_TEXT"),
+      );
+      return false;
+    }
+
+    $arProperties = array("deal_id" => $arCurrentValues["deal_id"]);
+
+    $arCurrentActivity = &CBPWorkflowTemplateLoader::FindActivityByName(
       $arWorkflowTemplate,
       $activityName
     );
-    if (is_array($arCurrentActivity["Properties"]))
-      $arCurrentValues["deal_id "] =
-    $arCurrentActivity["Properties"]["deal_id"];
+    $arCurrentActivity["Properties"] = $arProperties;
+
+    return true;
   }
-  return $runtime->ExecuteResourceFile(
-    __FILE__,
-    "properties_dialog.php",
-    array(
-      "arCurrentValues" => $arCurrentValues,
-      "formName" => $formName,
-    )
-  );
-}
-
-public static function GetPropertiesDialogValues($documentType, $activityName, 
-  &$arWorkflowTemplate, &$arWorkflowParameters, &$arWorkflowVariables,
-  $arCurrentValues, &$arErrors) {
-  $arErrors = array();
-
-  $runtime = CBPRuntime::GetRuntime();
-
-  if (strlen($arCurrentValues["deal_id"]) <= 0) {
-    $arErrors[] = array(
-      "code" => "emptyCode",
-      "message" => GetMessage("MYACTIVITY_EMPTY_TEXT"),
-    );
-    return false;
-  }
-
-  $arProperties = array("deal_id" => $arCurrentValues["deal_id"]);
-
-  $arCurrentActivity = &CBPWorkflowTemplateLoader::FindActivityByName(
-    $arWorkflowTemplate,
-    $activityName
-  );
-  $arCurrentActivity["Properties"] = $arProperties;
-
-  return true;
-}
 }
