@@ -1,11 +1,10 @@
 <?
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die(); 
 
+use Bitrix\UI\Toolbar\Facade\Toolbar;
+CJSCore::Init(array("jquery"));
 
-$APPLICATION->IncludeComponent(
-  'bitrix:main.ui.filter',
-  '',
-  [ 
+Toolbar::AddFilter([ 
     'FILTER_ID' => 'report_list', 
     'GRID_ID' => 'report_list', 
     'FILTER' => [ 
@@ -15,8 +14,15 @@ $APPLICATION->IncludeComponent(
   ],
   'ENABLE_LIVE_SEARCH' => true, 
   'ENABLE_LABEL' => true
-]
-); 
+]);
+
+$deal_award_pdf_button = new \Bitrix\UI\Buttons\Button([
+  'icon' => Bitrix\UI\Buttons\Icon::PRINT,
+  'text' => 'pdf',
+]);
+Toolbar::addButton($deal_award_pdf_button);
+
+$deal_award_pdf_button->addClass('deal_award_pdf_button');
 
 
 $APPLICATION->IncludeComponent(
@@ -26,10 +32,10 @@ $APPLICATION->IncludeComponent(
     'GRID_ID' => 'report_list', 
     'COLUMNS' => [
       ['id' => 'ID', 'name' => 'ID', 'sort' => 'ID', 'default' => true], 
-      ['id' => 'UF_USER_ID', 'name' => 'user', 'sort' => 'UF_USER_ID', 'default' => true], 
-      ['id' => 'UF_DEAL_ID', 'name' => 'deal', 'sort' => 'UF_DEAL_ID', 'default' => true],  
-      ['id' => 'UF_AWARD_AMOUNT', 'name' => 'award amount', 'sort' => 'UF_AWARD_AMOUNT', 'default' => true],
-      ['id' => 'UF_AWARD_TIME', 'name' => 'award date', 'sort' => 'UF_AWARD_TIME', 'default' => true],  
+      ['id' => 'UF_USER_ID', 'name' => GetMessage('user'), 'sort' => 'UF_USER_ID', 'default' => true], 
+      ['id' => 'UF_DEAL_ID', 'name' => GetMessage('deal'), 'sort' => 'UF_DEAL_ID', 'default' => true],  
+      ['id' => 'UF_AWARD_AMOUNT', 'name' => GetMessage('award_amount'), 'sort' => 'UF_AWARD_AMOUNT', 'default' => true],
+      ['id' => 'UF_AWARD_TIME', 'name' =>  GetMessage('date'), 'sort' => 'UF_AWARD_TIME', 'default' => true],  
     ], 
     'ROWS' => $arResult->grid_items_list,
     'SHOW_ROW_CHECKBOXES' => false, 
@@ -80,3 +86,19 @@ $APPLICATION->IncludeComponent(
   ]
 );
 
+?>
+
+<pre><?php print_r($this->getComponent()->getPath()); ?></pre>
+
+<script>
+  $(function () {
+    console.clear();
+    $('.deal_award_pdf_button').click(function () {
+      $.post('<?php echo $this->getComponent()->getPath();?>/ajax.php', {
+        deal_award_pdf_button: 'Y',
+      }, function (data) {
+        console.log(data);
+      });
+    });
+  });
+</script>

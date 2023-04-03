@@ -5,7 +5,6 @@ class CBPdeal_award extends CBPActivity {
   public function __construct($name) {
     parent::__construct($name);
     $this->arProperties = array("Title" => "", "deal_id" => "");
-
   }
 
   public function Execute () {
@@ -24,7 +23,7 @@ class CBPdeal_award extends CBPActivity {
     ], false, false, [
       'ID',
       'PRODUCT_ID',
-      'PRICE',
+      'PRICE_NETTO',
       'QUANTITY',
     ]);
     while ($prod_row = $src_prod_row->Fetch()) {
@@ -33,18 +32,22 @@ class CBPdeal_award extends CBPActivity {
     }
     $prod_catalog = Bitrix\Main\Config\Option::get('crm', 'default_product_catalog_id');
 
-    $src_prod = CIBlockElement::GetList([], [
-      'ID' => $poroducts_id_arr,
-      'IBLOCK_ID' => $prod_catalog,
-    ], false, false, [
-      'ID',
-      'IBLOCK_ID',
-      'PROPERTY_UF_CRM_DEAL_AWARD_SIZE',
-      'PROPERTY_UF_CRM_DEAL_AWARD_TYPE',
-    ]);
-    while ($prod = $src_prod->Fetch()) {
+    foreach ($poroducts_id_arr as $key => $value) {
+      $prod = CIBlockElement::GetList([], [
+        'ID' => $value,
+        'IBLOCK_ID' => $prod_catalog,
+      ], false, false, [
+        'ID',
+        'IBLOCK_ID',
+        'PROPERTY_UF_CRM_DEAL_AWARD_SIZE',
+        'PROPERTY_UF_CRM_DEAL_AWARD_TYPE',
+      ])->Fetch();
       $deal['products'][] = $prod;
     }
+
+    file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode(
+      $deal
+    ));
 
     $this->awardCalc($deal);  
   }  
@@ -53,7 +56,7 @@ class CBPdeal_award extends CBPActivity {
     $total = 0;
     foreach ($deal['products'] as $key => $value) {
       if ($value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] and $value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE']) {
-        $cost =  $deal['prod_row'][$key]['PRICE'] * $deal['prod_row'][$key]['QUANTITY'];
+        $cost =  $deal['prod_row'][$key]['PRICE_NETTO'] * $deal['prod_row'][$key]['QUANTITY'];
         if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'absolute') {
           $award = $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] * $deal['prod_row'][$key]['QUANTITY'];
           $total = $total + $award;
@@ -63,12 +66,12 @@ class CBPdeal_award extends CBPActivity {
           $total = $total + $award;
         }
         if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'difference') {
-          $award = ($value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] 
-            - $deal['prod_row'][$key]['PRICE']
+          $award = ($deal['prod_row'][$key]['PRICE_NETTO'] 
+            - $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE']
           ) * $deal['prod_row'][$key]['QUANTITY'];
+
           $total = $total + $award;
         }
-        
       }
     }
     $deal = [
@@ -84,7 +87,7 @@ class CBPdeal_award extends CBPActivity {
   function awardSave ($deal) {
 
     // file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($deal));
-    
+
     $hl = \Bitrix\Highloadblock\HighloadBlockTable::getList([
       'filter' => ['TABLE_NAME' => 'deal_award',],
       'select' => ['ID'],

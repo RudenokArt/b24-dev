@@ -35,6 +35,8 @@ Class art_r_deal_award extends CModule
      $_SERVER["DOCUMENT_ROOT"]."/local/components", true, true);
     CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/art_r.deal_award/install/activities/custom",
      $_SERVER["DOCUMENT_ROOT"]."/local/activities/custom", true, true);
+    CopyDirFiles($_SERVER["DOCUMENT_ROOT"]."/local/modules/art_r.deal_award/install/deal_award",
+     $_SERVER["DOCUMENT_ROOT"]."/deal_award", true, true);
     return true;
   }
 
@@ -42,6 +44,7 @@ Class art_r_deal_award extends CModule
   {
     DeleteDirFilesEx("/local/components/art_r/deal_award/");
     DeleteDirFilesEx("/local/activities/custom/deal_award/");
+    DeleteDirFilesEx("/deal_award/");
     return true;
   }
 

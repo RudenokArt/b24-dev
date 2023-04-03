@@ -1,9 +1,16 @@
-<? if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
+<? 
 
+
+if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 
 $arResult = new DealAward();
 
+if (isset($_POST['deal_award_pdf_button'])) {
+	echo 'deal_award_pdf_button';
+	exit();
+}
 $this->IncludeComponentTemplate();
+
 
 ?>
 
@@ -51,7 +58,7 @@ class DealAward {
 
 			$arr[] = [
 				'data'    => [ 
-					"ID" => $value['ID'] . ' ' . json_encode($value['log']),
+					"ID" => $value['ID'],
 					"UF_USER_ID" => '<a href="/company/personal/user/'.$value['UF_USER_ID'].'/">'.$user['NAME'].' '.$user['LAST_NAME'].'</a>',
 					"UF_DEAL_ID" =>  '<a href="/crm/deal/details/'.$value['UF_DEAL_ID'].'/">'.$deal['TITLE'].'</a>',
 					"UF_AWARD_AMOUNT" => $value['UF_AWARD_AMOUNT'] .' '. $deal['CURRENCY_ID'],
@@ -105,10 +112,9 @@ class DealAward {
 				$deal_id_arr[] = $deal['ID'];
 			}
 			$grid_filter['UF_DEAL_ID'] = $deal_id_arr;
-			file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($deal_id_arr));
+			// file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($deal_id_arr));
 		}
-
-
+		file_put_contents(__DIR__.'/filter.json', json_encode($grid_filter));
 		return $grid_filter;
 
 	}
