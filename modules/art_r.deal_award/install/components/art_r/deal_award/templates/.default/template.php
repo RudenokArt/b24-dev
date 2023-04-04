@@ -1,16 +1,17 @@
 <?
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die(); 
+$APPLICATION->SetAdditionalCSS("/bitrix/css/main/font-awesome.css");
 
 use Bitrix\UI\Toolbar\Facade\Toolbar;
 CJSCore::Init(array("jquery"));
 
 Toolbar::AddFilter([ 
-    'FILTER_ID' => 'report_list', 
-    'GRID_ID' => 'report_list', 
-    'FILTER' => [ 
-      ['id' => 'DATE', 'name' => 'date', 'type' => 'date'],
-      ['id' => 'DEAL', 'name' => 'deal', 'type' => 'string'],
-      ['id' => 'USER', 'name' => 'user', 'type' => 'dest_selector'],
+  'FILTER_ID' => 'report_list', 
+  'GRID_ID' => 'report_list', 
+  'FILTER' => [ 
+    ['id' => 'DATE', 'name' => 'date', 'type' => 'date'],
+    ['id' => 'DEAL', 'name' => 'deal', 'type' => 'string'],
+    ['id' => 'USER', 'name' => 'user', 'type' => 'dest_selector'],
   ],
   'ENABLE_LIVE_SEARCH' => true, 
   'ENABLE_LABEL' => true
@@ -86,19 +87,27 @@ $APPLICATION->IncludeComponent(
   ]
 );
 
+\Bitrix\Main\UI\Extension::load("ui.progressround");
+include_once 'preloader.php';
 ?>
 
-<pre><?php print_r($this->getComponent()->getPath()); ?></pre>
 
 <script>
   $(function () {
     console.clear();
     $('.deal_award_pdf_button').click(function () {
+       $('.preloader_wrapper').css({'display':'flex'});
       $.post('<?php echo $this->getComponent()->getPath();?>/ajax.php', {
         deal_award_pdf_button: 'Y',
+        table_head_user: "<?php echo GetMessage('user'); ?>",
+        table_head_deal: "<?php echo GetMessage('deal'); ?>",
+        table_head_amount: "<?php echo GetMessage('award_amount'); ?>",
+        table_head_date: "<?php echo GetMessage('date'); ?>",
       }, function (data) {
-        console.log(data);
+        window.open('<?php echo $this->getComponent()->getPath() ?>'+'/dompdf/report.pdf', '_blank');
+        $('.preloader_wrapper').css({'display':'none'});
       });
     });
   });
+
 </script>

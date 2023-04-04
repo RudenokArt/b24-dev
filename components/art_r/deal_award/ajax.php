@@ -29,13 +29,27 @@ $html = '<style>
 table {
 	margin: auto;
 	border-collapse: collapse;
+	font-family: Arial;
 }
-td {
+td, th {
 	border: 1px solid grey;
 	padding: 10px;
 }
+th {
+	font-weight: bold;
+	text-align: center;
+}
 </style>
-<table>';
+<table>
+<tr>
+<th><b>ID</b></th>
+<th>'.$_POST['table_head_user'].'</th>
+<th>'.$_POST['table_head_deal'].'</th>
+<th>'.$_POST['table_head_amount'].'</th>
+<th>'.$_POST['table_head_date'].'</th>
+</tr>
+';
+
 
 foreach ($arr as $key => $value) {
 	$html = $html . '
@@ -54,37 +68,3 @@ $html = $html . '</table>';
 include_once 'dompdf/index.php';
 
 ?>
-
-<style>
-	table {
-		margin: auto;
-		border-collapse: collapse;
-	}
-	td {
-		border: 1px solid grey;
-		padding: 10px;
-	}
-</style>
-<table>
-	<?php foreach ($arr as $key => $value): ?>
-		<tr>
-			<td>
-				<?php echo $value['ID']; ?>
-			</td>
-			<td>
-				<?php echo $value['user']; ?>
-			</td>
-			<td>
-				<?php echo $value['deal']; ?>
-			</td>
-			<td>
-				<?php echo $value['UF_AWARD_AMOUNT']; ?>
-			</td>
-			<td>
-				<?php echo $value['date']; ?>
-			</td>
-		</tr>
-	<?php endforeach ?>
-</table>
-
-<pre><?php print_r(json_decode($filter, true)); ?></pre>
