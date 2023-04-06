@@ -38,12 +38,19 @@ class DealAward {
 			'filter'=>['TABLE_NAME' => 'deal_award',],
 		])->Fetch();
 
+
 		$this->itemsList = $this->getItemsList();
+		$this->show_nav_pannel = true;
+		if (count($this->itemsList) < 1) {
+			$this->show_nav_pannel = false;
+		}
+		$this->total_row_count = count($this->itemsList);
 		$this->grid_items_list = $this->getGridItemsList();
 
 	}
 // <a href="/company/personal/user/1/"></a>
 	function getGridItemsList () {
+
 		foreach ($this->itemsList as $key => $value) {
 
 			$deal = CCrmDeal::GetListEx([], [
@@ -63,16 +70,6 @@ class DealAward {
 					"UF_DEAL_ID" =>  '<a href="/crm/deal/details/'.$value['UF_DEAL_ID'].'/">'.$deal['TITLE'].'</a>',
 					"UF_AWARD_AMOUNT" => $value['UF_AWARD_AMOUNT'] .' '. $deal['CURRENCY_ID'],
 					"UF_AWARD_TIME" => ConvertTimeStamp($value['UF_AWARD_TIME']),
-				],
-				'actions' => [
-					[
-						'text'  => 'Редактировать',
-						'onclick' => 'document.location.href="/accountant/reports/1/edit/"'
-					],
-					[
-						'text'    => 'Удалить',
-						'onclick' => 'document.location.href="/accountant/reports/1/delete/"'
-					]
 				],
 			];
 		}

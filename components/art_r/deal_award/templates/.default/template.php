@@ -1,17 +1,19 @@
 <?
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die(); 
 $APPLICATION->SetAdditionalCSS("/bitrix/css/main/font-awesome.css");
+$APPLICATION->SetTitle(GetMessage('deal_award'));
 
 use Bitrix\UI\Toolbar\Facade\Toolbar;
+Toolbar::DeleteFavoriteStar();
 CJSCore::Init(array("jquery"));
 
 Toolbar::AddFilter([ 
   'FILTER_ID' => 'report_list', 
   'GRID_ID' => 'report_list', 
   'FILTER' => [ 
-    ['id' => 'DATE', 'name' => 'date', 'type' => 'date'],
-    ['id' => 'DEAL', 'name' => 'deal', 'type' => 'string'],
-    ['id' => 'USER', 'name' => 'user', 'type' => 'dest_selector'],
+    ['id' => 'DATE', 'name' => GetMessage('date'), 'type' => 'date'],
+    ['id' => 'DEAL', 'name' => GetMessage('deal'), 'type' => 'string'],
+    ['id' => 'USER', 'name' => GetMessage('user'), 'type' => 'dest_selector'],
   ],
   'ENABLE_LIVE_SEARCH' => true, 
   'ENABLE_LABEL' => true
@@ -54,10 +56,10 @@ $APPLICATION->IncludeComponent(
     'SHOW_CHECK_ALL_CHECKBOXES' => true, 
     'SHOW_ROW_ACTIONS_MENU'     => true, 
     'SHOW_GRID_SETTINGS_MENU'   => true, 
-    'SHOW_NAVIGATION_PANEL'     => true, 
+    'SHOW_NAVIGATION_PANEL'     => $arResult->show_nav_pannel, 
     'SHOW_PAGINATION'           => true, 
     'SHOW_SELECTED_COUNTER'     => false, 
-    'SHOW_TOTAL_COUNTER'        => false, 
+    'SHOW_TOTAL_COUNTER'        => true, 
     'SHOW_PAGESIZE'             => true, 
     'SHOW_ACTION_PANEL'         => false, 
     'ACTION_PANEL'              => [ 
@@ -84,6 +86,7 @@ $APPLICATION->IncludeComponent(
     'ALLOW_PIN_HEADER'          => true, 
     'AJAX_OPTION_HISTORY'       => 'N', 
     'CURRENT_PAGE' => 5,
+    'TOTAL_ROWS_COUNT' => $arResult->total_row_count,
   ]
 );
 
@@ -96,7 +99,8 @@ include_once 'preloader.php';
   $(function () {
     console.clear();
     $('.deal_award_pdf_button').click(function () {
-       $('.preloader_wrapper').css({'display':'flex'});
+       var button = this;
+       $(button).addClass('ui-btn-wait');
       $.post('<?php echo $this->getComponent()->getPath();?>/ajax.php', {
         deal_award_pdf_button: 'Y',
         table_head_user: "<?php echo GetMessage('user'); ?>",
@@ -105,7 +109,7 @@ include_once 'preloader.php';
         table_head_date: "<?php echo GetMessage('date'); ?>",
       }, function (data) {
         window.open('<?php echo $this->getComponent()->getPath() ?>'+'/dompdf/report.pdf', '_blank');
-        $('.preloader_wrapper').css({'display':'none'});
+        $(button).removeClass('ui-btn-wait');
       });
     });
   });
