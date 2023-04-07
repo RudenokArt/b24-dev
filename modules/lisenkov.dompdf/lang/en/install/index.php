@@ -1,0 +1,5 @@
+<?php
+$MESS['LISENKOV_DOMPDF_MODULE_NAME'] = 'DomPDF';
+$MESS['LISENKOV_DOMPDF_MODULE_DESCRIPTION'] = 'The module adds the DomPDF library';
+$MESS['LISENKOV_DOMPDF_INSTALL_SUCCESS'] = 'Successful';
+?>

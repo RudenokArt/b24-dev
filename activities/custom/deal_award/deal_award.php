@@ -49,9 +49,7 @@ class CBPdeal_award extends CBPActivity {
       $deal['products'][] = $prod;
     }
 
-    file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode(
-      $deal
-    ));
+    // file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($deal));
 
     $this->awardCalc($deal);  
   }  

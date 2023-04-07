@@ -3,7 +3,8 @@ require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_befo
 use Bitrix\Main\Loader;
 Loader::IncludeModule('highloadblock');
 
-$filter = file_get_contents(__DIR__.'/filter.json');
+// $filter = file_get_contents(__DIR__.'/filter.json');
+$filter = CUserOptions::GetOption('deal_award', 'filter', false, false);
 
 $highload = \Bitrix\Highloadblock\HighloadBlockTable::getList([
 	'filter'=>['TABLE_NAME' => 'deal_award',],
@@ -12,7 +13,8 @@ $highload = \Bitrix\Highloadblock\HighloadBlockTable::getList([
 $items = Bitrix\Highloadblock\HighloadBlockTable::compileEntity($highload);
 $entity_data_class = $items->getDataClass();
 $rsData = $entity_data_class::getList([
-	'filter'=> json_decode($filter, true),
+	// 'filter'=> json_decode($filter, true),
+	'filter' => $filter,
 ]);
 $rsData = $rsData;
 $arr = [];

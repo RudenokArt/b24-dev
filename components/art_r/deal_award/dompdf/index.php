@@ -1,7 +1,7 @@
 <?
 //подключаем автозагрузчик
-include_once 'autoload.inc.php';
-
+// include_once 'autoload.inc.php';
+CModule::includeModule('lisenkov.dompdf');
 use Dompdf\Dompdf;
 //создаемэкземпляр класса
 $d=new Dompdf();

@@ -130,7 +130,8 @@ class DealAward {
 		}
 
 		file_put_contents(__DIR__.'/filter.json', json_encode($grid_filter));
-		file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($grid_filter));
+		// file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($grid_filter));
+		CUserOptions::SetOption('deal_award', 'filter', $grid_filter, false, false);
 		return $grid_filter;
 
 	}
