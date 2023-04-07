@@ -140,7 +140,7 @@ Class art_r_deal_award extends CModule
   $iblock_id = Bitrix\Main\Config\Option::get('crm', 'default_product_catalog_id');
 
   $p_size = (new CIBlockProperty)->Add([
-    'NAME' => 'Deal award size',
+    'NAME' => GetMessage('deal_award_size'),
     'ACTIVE' => 'Y',
     'SORT' => 500,
     'CODE' => 'UF_CRM_DEAL_AWARD_SIZE',
@@ -169,7 +169,6 @@ Class art_r_deal_award extends CModule
     'VALUE' => 'difference',
   ]);
 }
-
 
 }
 ?>

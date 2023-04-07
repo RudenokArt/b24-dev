@@ -48,7 +48,6 @@ class DealAward {
 		$this->grid_items_list = $this->getGridItemsList();
 
 	}
-// <a href="/company/personal/user/1/"></a>
 	function getGridItemsList () {
 
 		foreach ($this->itemsList as $key => $value) {
@@ -81,9 +80,14 @@ class DealAward {
 		$filter = [];
 		$filterOption = new Bitrix\Main\UI\Filter\Options('report_list');
 		$filterData = $filterOption->getFilter([]);
+
 		foreach ($filterData as $k => $v) {
 			$filter[$k] = $v;            
 		}
+
+		$search = $filterOption->getSearchString();
+		$this->search = $search;
+		$this->deal_f = $filter['DEAL'];
 
 		$grid_filter = [];
 
@@ -108,10 +112,25 @@ class DealAward {
 			while ($deal = $deal_src->Fetch()) {
 				$deal_id_arr[] = $deal['ID'];
 			}
+
 			$grid_filter['UF_DEAL_ID'] = $deal_id_arr;
-			// file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($deal_id_arr));
 		}
+
+		if ($search != '') {
+			$deal_src = CCrmDeal::GetListEx([], [
+				'%TITLE' => $search,
+			], false, false, [
+				'ID',
+			]);
+			while ($deal = $deal_src->Fetch()) {
+				$deal_id_arr[] = $deal['ID'];
+			}
+
+			$grid_filter['UF_DEAL_ID'] = $deal_id_arr;
+		}
+
 		file_put_contents(__DIR__.'/filter.json', json_encode($grid_filter));
+		file_put_contents($_SERVER['DOCUMENT_ROOT'].'/test/test.json', json_encode($grid_filter));
 		return $grid_filter;
 
 	}
