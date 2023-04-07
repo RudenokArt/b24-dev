@@ -158,15 +158,18 @@ Class art_r_deal_award extends CModule
   ]);
   $option1 = (new CIBlockPropertyEnum)->Add([
     'PROPERTY_ID' => $p_type,
-    'VALUE' => 'absolute',
+    'VALUE' => GetMessage('absolute'),
+    'EXTERNAL_ID' => 'absolute',
   ]);
   $option2 = (new CIBlockPropertyEnum)->Add([
     'PROPERTY_ID' => $p_type,
-    'VALUE' => 'percent',
+    'VALUE' => GetMessage('percent'),
+    'EXTERNAL_ID' => 'percent',
   ]);
   $option3 = (new CIBlockPropertyEnum)->Add([
     'PROPERTY_ID' => $p_type,
-    'VALUE' => 'difference',
+    'VALUE' => GetMessage('difference'),
+    'EXTERNAL_ID' => 'difference',
   ]);
 }
 

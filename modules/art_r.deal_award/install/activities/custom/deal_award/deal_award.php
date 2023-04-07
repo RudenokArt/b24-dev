@@ -42,6 +42,10 @@ class CBPdeal_award extends CBPActivity {
         'PROPERTY_UF_CRM_DEAL_AWARD_SIZE',
         'PROPERTY_UF_CRM_DEAL_AWARD_TYPE',
       ])->Fetch();
+      $prod['award_type'] = CIBlockPropertyEnum::GetList([], [
+        'ID' => $prod['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_ENUM_ID']
+      ])->Fetch()['XML_ID'];
+
       $deal['products'][] = $prod;
     }
 
@@ -57,15 +61,15 @@ class CBPdeal_award extends CBPActivity {
     foreach ($deal['products'] as $key => $value) {
       if ($value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] and $value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE']) {
         $cost =  $deal['prod_row'][$key]['PRICE_NETTO'] * $deal['prod_row'][$key]['QUANTITY'];
-        if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'absolute') {
+        if ($value['award_type'] == 'absolute') {
           $award = $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] * $deal['prod_row'][$key]['QUANTITY'];
           $total = $total + $award;
         }
-        if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'percent') {
+        if ($value['award_type'] == 'percent') {
           $award = $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE'] / 100 * $cost;
           $total = $total + $award;
         }
-        if ($value['PROPERTY_UF_CRM_DEAL_AWARD_TYPE_VALUE'] == 'difference') {
+        if ($value['award_type'] == 'difference') {
           $award = ($deal['prod_row'][$key]['PRICE_NETTO'] 
             - $value['PROPERTY_UF_CRM_DEAL_AWARD_SIZE_VALUE']
           ) * $deal['prod_row'][$key]['QUANTITY'];
