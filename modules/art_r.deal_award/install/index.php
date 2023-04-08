@@ -54,6 +54,7 @@ Class art_r_deal_award extends CModule
     $this->InstallFiles();
     $this->InstallProductFields();
     $this->InstalDealAwardTable();
+    $this->InstalMenuItem();
     RegisterModule($this->MODULE_ID);
     $APPLICATION->IncludeAdminFile("installing the module deal_award", $DOCUMENT_ROOT."/local/modules/art_r.deal_award/install/step.php");
   }
@@ -64,8 +65,22 @@ Class art_r_deal_award extends CModule
     $this->UnInstallFiles();
     $this->UnInstallProductFields();
     $this->UnInstalDealAwardTable();
+    $this->UnInstalMenuItem();
     UnRegisterModule($this->MODULE_ID);
     $APPLICATION->IncludeAdminFile("Uninstalling the module deal_award", $DOCUMENT_ROOT."/local/modules/art_r.deal_award/install/unstep.php");
+  }
+
+  function UnInstalMenuItem () {
+    $menu_items_arr = unserialize(COption::GetOptionString('intranet', 'left_menu_custom_preset_items'));
+    unset($menu_items_arr[$this->MODULE_ID]);
+    COption::SetOptionString('intranet', 'left_menu_custom_preset_items', serialize($menu_items_arr));
+  }
+
+  function InstalMenuItem () {
+    COption::SetOptionString('intranet', 'left_menu_preset', 'custom');
+    $menu_items_arr = unserialize(COption::GetOptionString('intranet', 'left_menu_custom_preset_items'));
+    $menu_items_arr[$this->MODULE_ID] = ['LINK' => '/deal_award/', 'TEXT' => GetMessage('deal_award')];
+    COption::SetOptionString('intranet', 'left_menu_custom_preset_items', serialize($menu_items_arr));
   }
 
   function InstalDealAwardTable () {
@@ -149,7 +164,7 @@ Class art_r_deal_award extends CModule
   ]);
 
   $p_type = (new CIBlockProperty)->Add([
-    'NAME' => 'Deal award type',
+    'NAME' => GetMessage('deal_award_type'),
     'ACTIVE' => 'Y',
     'SORT' => 500,
     'CODE' => 'UF_CRM_DEAL_AWARD_TYPE',
