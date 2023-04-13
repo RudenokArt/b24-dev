@@ -16,11 +16,24 @@ $ticket_faq_save_button = new \Bitrix\UI\Buttons\Button([
 $ticket_faq_save_button->addClass('ticket_faq_save_button');
 \Bitrix\UI\Toolbar\Facade\Toolbar::addButton($ticket_faq_save_button);
 
+
 if (isset($_POST['ticket_faq_add']) and $_POST['ticket_faq_add'] == 'Y') {
-	$arResult->addFAQ();
+	if (isset($_GET['update'])) {
+	$arResult->updateFAQ($_GET['update']);
+	} else {
+		$arResult->addFAQ();
+	}
 }
 
+if (isset($_GET['update'])) {
+	$ticket_faq_update_item = $arResult->getFAQItemById($_GET['update']);
+}
+
+
 ?>
+
+<pre><?php print_r($ticket_faq_update_item); ?></pre>
+
 <form action="" method="post" id="ticket_faq_add_form">
 	<b>*<?php echo GetMessage('question'); ?>:</b>
 	<?php 
@@ -30,7 +43,7 @@ if (isset($_POST['ticket_faq_add']) and $_POST['ticket_faq_add'] == 'Y') {
 			'name' => 'question',
 			'id' => 'question',
 			'inputName' => 'question',
-			'content' => $arUserField['VALUE'],
+			'content' => $ticket_faq_update_item['QUESTION'],
 			'width' => '100%',
 			'minBodyWidth' => 230,
 			'normalBodyWidth' => 555,
@@ -151,7 +164,7 @@ if (isset($_POST['ticket_faq_add']) and $_POST['ticket_faq_add'] == 'Y') {
 			'name' => 'answer',
 			'id' => 'answer',
 			'inputName' => 'answer',
-			'content' => $arUserField['VALUE'],
+			'content' => $ticket_faq_update_item['ANSWER'],
 			'width' => '100%',
 			'minBodyWidth' => 230,
 			'normalBodyWidth' => 555,

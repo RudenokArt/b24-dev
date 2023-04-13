@@ -6,10 +6,19 @@
 class TicketsFAQ extends CBitrixComponent
 {
 	
+	function updateFAQ ($update) {
+		global $DB;
+		$DB->Query('UPDATE `b_klimsol_faq` SET `QUESTION`="'.$_POST['question'].'", `ANSWER`="'.$_POST['answer'].'" WHERE `ID`='.$update);
+	}
 
 	function addFAQ () {
 		global $DB;
 		$DB->Query('INSERT INTO `b_klimsol_faq` (`QUESTION`, `ANSWER`) VALUES ("'.$_POST['question'].'", "'.$_POST['answer'].'")');
+	}
+
+	function getFAQItemById ($item_id) {
+		global $DB;
+		return $DB->Query('SELECT * FROM `b_klimsol_faq` WHERE `ID`='.$item_id)->Fetch();
 	}
 
 	function getGridFAQList () {
@@ -27,6 +36,16 @@ class TicketsFAQ extends CBitrixComponent
 					'QUESTION' => $value['QUESTION'],
 					'ANSWER' => $value['ANSWER'],
 				],
+				'actions' => [ 
+					[
+						'text'    => 'Update',
+						'onclick' => 'ticketsFAQUpdateItem('.$value['ID'].')',
+					],
+					[
+						'text'    => 'Delete',
+						'onclick' => 'ticketsFAQDeleteItem('.$value['ID'].')',
+					]
+				],
 			];
 		}
 		return $arr;
@@ -35,6 +54,8 @@ class TicketsFAQ extends CBitrixComponent
 	function getFAQList () {
 		global $DB;
 		$dbRes = $DB->Query('SELECT * FROM `b_klimsol_faq`
+			ORDER BY `' . array_key_first($this->sort['sort']). '`
+			' . $this->sort['sort'][array_key_first($this->sort['sort'])].' 
 			LIMIT ' . $this->page_size . ' OFFSET ' . $this->offset);
 		while ($row = $dbRes->Fetch()) {
 			$arr[] = $row;

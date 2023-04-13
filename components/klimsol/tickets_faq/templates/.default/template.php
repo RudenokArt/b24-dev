@@ -37,6 +37,7 @@ $APPLICATION->IncludeComponent(
 		'AJAX_OPTION_JUMP'          => 'N', 
 		'SHOW_CHECK_ALL_CHECKBOXES' => true, 
 		'SHOW_ROW_ACTIONS_MENU'     => true, 
+		'ROW_ACTIONS_MENU' => [],
 		'SHOW_GRID_SETTINGS_MENU'   => true, 
 		'SHOW_NAVIGATION_PANEL'     => true, 
 		'SHOW_PAGINATION'           => true, 
@@ -44,23 +45,6 @@ $APPLICATION->IncludeComponent(
 		'SHOW_TOTAL_COUNTER'        => true, 
 		'SHOW_PAGESIZE'             => true, 
 		'SHOW_ACTION_PANEL'         => false, 
-		'ACTION_PANEL'              => [ 
-			'GROUPS' => [ 
-				'TYPE' => [ 
-					'ITEMS' => [ 
-						[ 
-							'ID'    => 'set-type', 
-							'TYPE'  => 'DROPDOWN', 
-							'ITEMS' => [ 
-								['VALUE' => '', 'NAME' => '- Выбрать -'], 
-								['VALUE' => 'plus', 'NAME' => 'Поступление'], 
-								['VALUE' => 'minus', 'NAME' => 'Списание'] 
-							] 
-						], 
-					], 
-				] 
-			], 
-		], 
 		'ALLOW_COLUMNS_SORT'        => true, 
 		'ALLOW_COLUMNS_RESIZE'      => true, 
 		'ALLOW_HORIZONTAL_SCROLL'   => true, 
@@ -68,7 +52,7 @@ $APPLICATION->IncludeComponent(
 		'ALLOW_PIN_HEADER'          => true, 
 		'AJAX_OPTION_HISTORY'       => 'N', 
 		'CURRENT_PAGE' => 5,
-		'TOTAL_ROWS_COUNT' => $arResult->total_row_count,
+		'TOTAL_ROWS_COUNT' => $arResult->faq_count,
 	]
 );
 
@@ -78,21 +62,58 @@ $APPLICATION->IncludeComponent(
 <pre>кол на стр. <?php print_r($arResult->page_size);?></pre>
 <pre>стр. <?php print_r($arResult->current_page);?></pre>
 <pre><?php print_r($arResult->faq_list);?></pre>
+<pre><?php print_r($arResult->sort['sort'][array_key_first($arResult->sort['sort'])]);?></pre>
+<pre><?php print_r(array_key_first($arResult->sort['sort']));?></pre>
 <pre><?php print_r(get_class_methods($arResult->nav));?></pre>
 
+
 <script>
-	$('.open_add_faq_form').click(function () {
-		BX.SidePanel.Instance.open('add_faq_form.php', {
-			allowChangeHistory: false,
+
+	$(function () {
+
+		$('.open_add_faq_form').click(function () {
+			BX.SidePanel.Instance.open('add_faq_form.php', {
+				allowChangeHistory: false,
+			});
 		});
-	});
 
 		BX.addCustomEvent("SidePanel.Slider:onCloseComplete", function(event) {
-      var reloadParams = { apply_filter: 'Y', clear_nav: 'Y' };
+			ticketsFAQGridReload();
+		});
+
+	});
+
+	function ticketsFAQGridReload () {
+		var reloadParams = { apply_filter: 'Y', clear_nav: 'Y' };
 		var gridObject = BX.Main.gridManager.getById('klimsol_tickets_faq_grid');
 		if (gridObject.hasOwnProperty('instance')){
 			gridObject.instance.reloadTable('POST', reloadParams);
 		}
-    });
+	}
 
-</script>
+	function ticketsFAQDeleteItem (item_id) {
+		console.clear();
+		BX.ajax.runComponentAction(
+			'klimsol:tickets_faq',
+			'ticketsFAQDeleteItem',
+			{
+				mode: 'ajax',
+				data: {
+					item_id,
+				},
+			}
+			).then(function (result)
+			{
+				console.log(result.data);
+			}).then(ticketsFAQGridReload());
+
+		}
+
+		function ticketsFAQUpdateItem (item_id) {
+			BX.SidePanel.Instance.open('add_faq_form.php?update='+item_id, {
+				allowChangeHistory: false,
+			});
+		}
+
+
+	</script>
