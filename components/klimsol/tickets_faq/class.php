@@ -13,7 +13,7 @@ class TicketsFAQ extends CBitrixComponent
 
 	function addFAQ () {
 		global $DB;
-		$DB->Query('INSERT INTO `b_klimsol_faq` (`QUESTION`, `ANSWER`) VALUES ("'.$_POST['question'].'", "'.$_POST['answer'].'")');
+		$DB->Query('INSERT INTO `b_klimsol_faq` (`DATE`, `QUESTION`, `ANSWER`) VALUES ('.time().',"'.$_POST['question'].'", "'.$_POST['answer'].'")');
 	}
 
 	function getFAQItemById ($item_id) {
@@ -21,7 +21,45 @@ class TicketsFAQ extends CBitrixComponent
 		return $DB->Query('SELECT * FROM `b_klimsol_faq` WHERE `ID`='.$item_id)->Fetch();
 	}
 
+	function setGridFAQfilter () {
+		$filter = [];
+		$filterOption = new Bitrix\Main\UI\Filter\Options('klimsol_tickets_faq_filter');
+		$filterData = $filterOption->getFilter([]);
+
+		foreach ($filterData as $k => $v) {
+			$filter[$k] = $v;            
+		}
+
+		$search = $filterOption->getSearchString();
+		$grid_filter = '';
+		if ($search and !$filter['DATE_from']) {
+			$grid_filter = 'WHERE `QUESTION` LIKE "%'.$search.'%" OR `ANSWER` LIKE "%'.$search.'%"';
+		}
+
+		$date_from = MakeTimeStamp($filter['DATE_from']);
+		$date_to = MakeTimeStamp($filter['DATE_to']);
+		if (!$search and $filter['DATE_from']) {
+			$grid_filter = 'WHERE `DATE` BETWEEN '.$date_from.' AND '.$date_to;
+		}
+
+		if ($search and $filter['DATE_from']) {
+			$grid_filter = 'WHERE (`QUESTION` LIKE "%'.$search.'%" OR `ANSWER` LIKE "%'.$search.'%")';
+			$grid_filter = $grid_filter.' AND ';
+			$grid_filter = $grid_filter.'(`DATE` BETWEEN '.$date_from.' AND '.$date_to.')';
+		}
+
+		$filter_json = [$date_from, $date_to, $search];
+
+		file_put_contents(
+			$_SERVER['DOCUMENT_ROOT'].'/test/test.json',
+			json_encode($filter_json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+		);
+		// CUserOptions::SetOption('tickets_faq_filter', 'filter', $grid_filter, false, false);
+		return $grid_filter;
+	}
+
 	function getGridFAQList () {
+		$this->filter = $this->setGridFAQfilter();
 		$this->faq_count = $this->getFAQCount();
 		$this->setFAQNav();
 		$this->current_page = $this->nav->getCurrentPage();
@@ -32,7 +70,7 @@ class TicketsFAQ extends CBitrixComponent
 			$arr[] = [
 				'data'    => [ 
 					'ID' => $value['ID'],
-					'DATE' => $value['DATE'],
+					'DATE' => ConvertTimeStamp($value['DATE']),
 					'QUESTION' => $value['QUESTION'],
 					'ANSWER' => $value['ANSWER'],
 				],
@@ -53,7 +91,8 @@ class TicketsFAQ extends CBitrixComponent
 
 	function getFAQList () {
 		global $DB;
-		$dbRes = $DB->Query('SELECT * FROM `b_klimsol_faq`
+		$dbRes = $DB->Query('SELECT * FROM `b_klimsol_faq` 
+			'.$this->filter.'
 			ORDER BY `' . array_key_first($this->sort['sort']). '`
 			' . $this->sort['sort'][array_key_first($this->sort['sort'])].' 
 			LIMIT ' . $this->page_size . ' OFFSET ' . $this->offset);
@@ -65,7 +104,7 @@ class TicketsFAQ extends CBitrixComponent
 
 	function getFAQCount () {
 		global $DB;
-		return $DB->Query('SELECT COUNT(*) FROM `b_klimsol_faq`')->Fetch()['COUNT(*)'];
+		return $DB->Query('SELECT COUNT(*) FROM `b_klimsol_faq`	'.$this->filter)->Fetch()['COUNT(*)'];
 	}
 
 	function setFAQNav () {

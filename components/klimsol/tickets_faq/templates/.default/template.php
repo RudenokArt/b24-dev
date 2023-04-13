@@ -11,6 +11,16 @@ $ticket_faq_save_button = new \Bitrix\UI\Buttons\Button([
 $ticket_faq_save_button->addClass('open_add_faq_form');
 \Bitrix\UI\Toolbar\Facade\Toolbar::addButton($ticket_faq_save_button);
 
+Toolbar::AddFilter([ 
+  'FILTER_ID' => 'klimsol_tickets_faq_filter', 
+  'GRID_ID' => 'klimsol_tickets_faq_grid', 
+  'FILTER' => [ 
+    ['id' => 'DATE', 'name' => GetMessage('date'), 'type' => 'date'],
+  ],
+  'ENABLE_LIVE_SEARCH' => true, 
+  'ENABLE_LABEL' => true
+]);
+
 $APPLICATION->IncludeComponent(
 	'bitrix:main.ui.grid',
 	'',
