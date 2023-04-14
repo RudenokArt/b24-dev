@@ -1,4 +1,5 @@
 <?php 
+$APPLICATION->SetTitle(GetMessage('faq'));
 \CJSCore::init("sidepanel");
 CJSCore::Init(array("jquery"));
 use Bitrix\UI\Toolbar\Facade\Toolbar;
@@ -67,15 +68,6 @@ $APPLICATION->IncludeComponent(
 );
 
 ?>
-
-<pre>кол. <?php print_r($arResult->faq_count);?></pre>
-<pre>кол на стр. <?php print_r($arResult->page_size);?></pre>
-<pre>стр. <?php print_r($arResult->current_page);?></pre>
-<pre><?php print_r($arResult->faq_list);?></pre>
-<pre><?php print_r($arResult->sort['sort'][array_key_first($arResult->sort['sort'])]);?></pre>
-<pre><?php print_r(array_key_first($arResult->sort['sort']));?></pre>
-<pre><?php print_r(get_class_methods($arResult->nav));?></pre>
-
 
 <script>
 

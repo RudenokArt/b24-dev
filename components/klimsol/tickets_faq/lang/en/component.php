@@ -8,9 +8,9 @@ $MESS['cancel'] = 'cancel';
 $MESS['required'] = 'Fill in the required fields';
 $MESS['delete'] = 'Delete';
 $MESS['update'] = 'Update';
-$MESS['test'] = 'test';
-$MESS['test'] = 'test';
-$MESS['test'] = 'test';
+
+$MESS['faq'] = 'FAQ';
+$MESS['update_question'] = 'Update a question';
 $MESS['test'] = 'test';
 
 

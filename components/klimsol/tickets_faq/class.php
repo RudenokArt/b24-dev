@@ -1,5 +1,5 @@
 <?php 
-
+CModule::IncludeModule('klimsol.tickets');
 /**
  * 
  */
@@ -7,16 +7,28 @@ class TicketsFAQ extends CBitrixComponent
 {
 	
 	function updateFAQ ($update) {
-		global $DB;
-		$DB->Query('UPDATE `b_klimsol_faq` SET `QUESTION`="'.$_POST['question'].'", `ANSWER`="'.$_POST['answer'].'" WHERE `ID`='.$update);
+		Bitrix\Klimsol\FaqTable::update($update, [
+			'QUESTION' => $_POST['question'],
+			'ANSWER' => $_POST['answer'],
+		]);
 	}
 
 	function addFAQ () {
-		global $DB;
-		$DB->Query('INSERT INTO `b_klimsol_faq` (`DATE`, `QUESTION`, `ANSWER`) VALUES ('.time().',"'.$_POST['question'].'", "'.$_POST['answer'].'")');
+		Bitrix\Klimsol\FaqTable::add([
+			'DATE' => time(),
+			'QUESTION' => $_POST['question'],
+			'ANSWER' => $_POST['answer'],
+		]);
 	}
 
 	function getFAQItemById ($item_id) {
+
+		return Bitrix\Klimsol\FaqTable::GetList([
+			'filter' => [
+					'ID' => $item_id,
+				],
+		])->Fetch();
+
 		global $DB;
 		return $DB->Query('SELECT * FROM `b_klimsol_faq` WHERE `ID`='.$item_id)->Fetch();
 	}

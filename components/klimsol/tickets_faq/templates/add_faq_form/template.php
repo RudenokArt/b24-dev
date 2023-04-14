@@ -27,12 +27,11 @@ if (isset($_POST['ticket_faq_add']) and $_POST['ticket_faq_add'] == 'Y') {
 
 if (isset($_GET['update'])) {
 	$ticket_faq_update_item = $arResult->getFAQItemById($_GET['update']);
+	$APPLICATION->SetTitle(GetMessage('update_question'));
 }
 
 
 ?>
-
-<pre><?php print_r($ticket_faq_update_item); ?></pre>
 
 <form action="" method="post" id="ticket_faq_add_form">
 	<b>*<?php echo GetMessage('question'); ?>:</b>
@@ -279,6 +278,13 @@ if (isset($_GET['update'])) {
 	<button id="ticket_faq_submit_button" name="ticket_faq_add" value="Y" style="opacity: 0;"></button>
 </form>
 
+<?$APPLICATION->IncludeComponent('bitrix:ui.button.panel', '', [
+    'BUTTONS' => [
+		['TYPE' => 'custom', 'LAYOUT' => '<div id="task-save" onclick="BX.GReviews.Task.Save(this)" class="ui-btn ui-btn-success ui-btn-icon-done">save</div>'],
+		['TYPE' => 'cancel', 'CAPTION' => 'cancel']
+	]
+]);?>
+
 <script>
 	$(function () {
 		$('#question').attr('required', 'required');
@@ -295,3 +301,4 @@ if (isset($_GET['update'])) {
 	});
 	
 </script>
+
