@@ -62,12 +62,13 @@ $APPLICATION->IncludeComponent(
 		'ALLOW_SORT'                => true, 
 		'ALLOW_PIN_HEADER'          => true, 
 		'AJAX_OPTION_HISTORY'       => 'N', 
-		'CURRENT_PAGE' => 5,
-		'TOTAL_ROWS_COUNT' => $arResult->faq_count,
+		'TOTAL_ROWS_COUNT' =>'',
 	]
 );
 
 ?>
+
+<pre><?php print_r($arResult->nav_params); ?></pre>
 
 <script>
 
