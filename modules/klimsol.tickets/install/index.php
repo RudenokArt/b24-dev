@@ -24,15 +24,35 @@ class klimsol_tickets extends CModule
 	
 	function DoInstall() {
 		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/install.sql');
+    $this->InstallFiles();
 		RegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Installing the module', __DIR__ . '/step.php');
 	}
 
 	function DoUninstall() {
 		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
+    $this->UnInstallFiles();
 		UnRegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Uninstalling the module', __DIR__ . '/unstep.php');
 	}
+
+	function InstallFiles()
+  {
+    CopyDirFiles(__DIR__.'/components/klimsol',
+     $_SERVER["DOCUMENT_ROOT"]."/local/components/klimsol", true, true);
+    CopyDirFiles(__DIR__."/tickets-FAQ",
+     $_SERVER["DOCUMENT_ROOT"]."/tickets-FAQ/", true, true);
+    return true;
+  }
+
+  function UnInstallFiles()
+  {
+    DeleteDirFilesEx("/local/components/klimsol");
+    DeleteDirFilesEx("/tickets-FAQ/");
+    return true;
+  }
+
+
 }
 
 
