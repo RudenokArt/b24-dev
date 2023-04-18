@@ -26,11 +26,13 @@ class klimsol_tickets extends CModule
 		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/install.sql');
     $this->InstallFiles();
 		RegisterModule($this->MODULE_ID);
+		RegisterModuleDependences('rest', 'OnRestServiceBuildDescription', 
+    	$this->MODULE_ID, 'Bitrix\Klimsol\TicketsFaqRest', 'OnRestServiceBuildDescription');
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Installing the module', __DIR__ . '/step.php');
 	}
 
 	function DoUninstall() {
-		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
+		// $GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
     $this->UnInstallFiles();
 		UnRegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Uninstalling the module', __DIR__ . '/unstep.php');

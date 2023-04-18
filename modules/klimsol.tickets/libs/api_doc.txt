@@ -1,0 +1,2 @@
+tickets.faq.list - получить список ЧаВо
+tickets.faq.list?faq_id=6 - получить ЧаВо по id
