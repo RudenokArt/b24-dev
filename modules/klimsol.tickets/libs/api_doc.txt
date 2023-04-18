@@ -1,2 +1,8 @@
 tickets.faq.list - получить список ЧаВо
 tickets.faq.list?faq_id=6 - получить ЧаВо по id
+
+https://demo.doc-brown.de/rest/1/mdixakft3g11zyog/tickets.faq.list
+https://demo.doc-brown.de/rest/1/mdixakft3g11zyog/tickets.faq.list?faq_id=6
+
+https://crm.klimsol.de/rest/36/zuaxtvdzguhrp77x/tickets.faq.list
+https://crm.klimsol.de/rest/36/zuaxtvdzguhrp77x/tickets.faq.list?faq_id=2
