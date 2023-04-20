@@ -109,7 +109,9 @@ class TicketsFAQ extends CBitrixComponent
 		$this->nav->allowAllRecords(true)
 		->setPageSize($this->nav_params['nPageSize'])
 		->initFromUri();
-		$this->nav->setRecordCount($this->getFAQRowCount());
+		$this->total = $this->getFAQRowCount();
+		$this->nav->setRecordCount($this->total);
+
 
 		return Bitrix\Klimsol\FaqTable::GetList([
 			'offset' => $this->nav->getOffset(),
