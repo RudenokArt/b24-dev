@@ -15,6 +15,7 @@ if (isset($_POST['ticket_faq_add']) and $_POST['ticket_faq_add'] == 'Y') {
 	} else {
 		$arResult->addFAQ();
 	}
+	?><script>window.top.ticketsFAQGridReload();</script><?
 }
 
 if (isset($_GET['update'])) {
@@ -24,6 +25,8 @@ if (isset($_GET['update'])) {
 
 
 ?>
+
+
 
 <form action="" method="post" id="ticket_faq_add_form">
 	<b>*<?php echo GetMessage('question'); ?>:</b>

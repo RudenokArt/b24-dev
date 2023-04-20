@@ -16,7 +16,7 @@ Toolbar::AddFilter([
   'FILTER_ID' => 'klimsol_tickets_faq_filter', 
   'GRID_ID' => 'klimsol_tickets_faq_grid', 
   'FILTER' => [ 
-    ['id' => 'DATE', 'name' => GetMessage('date'), 'type' => 'date'],
+    ['id' => 'DATE', 'name' => GetMessage('date'), 'type' => 'date', 'default' => true],
   ],
   'ENABLE_LIVE_SEARCH' => true, 
   'ENABLE_LABEL' => true
@@ -62,7 +62,7 @@ $APPLICATION->IncludeComponent(
 		'ALLOW_SORT'                => true, 
 		'ALLOW_PIN_HEADER'          => true, 
 		'AJAX_OPTION_HISTORY'       => 'N', 
-		'TOTAL_ROWS_COUNT' =>'',
+		'TOTAL_ROWS_COUNT' => $arResult->total,
 	]
 );
 
@@ -80,7 +80,7 @@ $APPLICATION->IncludeComponent(
 		});
 
 		BX.addCustomEvent("SidePanel.Slider:onCloseComplete", function(event) {
-			ticketsFAQGridReload();
+			// ticketsFAQGridReload();
 		});
 
 	});
