@@ -1,5 +1,8 @@
 tickets.faq.list - получить список ЧаВо
 tickets.faq.list?faq_id=6 - получить ЧаВо по id
+deal.fields.filter - получить разрешенные поля для сделок
+
+https://b24-dev/rest/1/5wu6vnai7erzh6k5/tickets.faq.list
 
 https://demo.doc-brown.de/rest/1/mdixakft3g11zyog/tickets.faq.list
 https://demo.doc-brown.de/rest/1/mdixakft3g11zyog/tickets.faq.list?faq_id=6

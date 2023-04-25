@@ -13,8 +13,16 @@ class TicketsFaqRest
 					'callback' => array(__CLASS__, 'TicketsFaqList'),
 					'options' => array(),
 				),
+				'deal.fields.filter' => array(
+					'callback' => array(__CLASS__, 'dealFieldsFilter'),
+					'options' => array(),
+				),
 			)
 		);
+	}
+
+	public static function dealFieldsFilter () {
+		return \Bitrix\Main\Config\Option::get('klimsol.tickets', 'fields_filter');
 	}
 
 	public static function TicketsFaqFilter () {

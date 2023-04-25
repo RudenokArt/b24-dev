@@ -42,8 +42,9 @@ class klimsol_tickets extends CModule
   {
     CopyDirFiles(__DIR__.'/components/klimsol',
      $_SERVER["DOCUMENT_ROOT"]."/local/components/klimsol", true, true);
-    CopyDirFiles(__DIR__."/tickets-FAQ",
-     $_SERVER["DOCUMENT_ROOT"]."/tickets-FAQ/", true, true);
+    CopyDirFiles(__DIR__."/tickets-FAQ", $_SERVER["DOCUMENT_ROOT"]."/tickets-FAQ/", true, true);
+    CopyDirFiles(__DIR__."/deal-fields-manager",
+    	$_SERVER["DOCUMENT_ROOT"]."/deal-fields-manager/", true, true);
     return true;
   }
 
@@ -51,6 +52,7 @@ class klimsol_tickets extends CModule
   {
     DeleteDirFilesEx("/local/components/klimsol");
     DeleteDirFilesEx("/tickets-FAQ/");
+    DeleteDirFilesEx("/deal-fields-manager/");
     return true;
   }
 
