@@ -57,7 +57,7 @@ class CBPlive_signature extends CBPActivity {
       'sig_id' => $sig_id,
     ];
     $query_string = http_build_query($arr);
-    $url = $_SERVER['SERVER_NAME'].'/live-signature/?'.$query_string;
+    $url = $_SERVER['SERVER_NAME'].'/live_signature/?'.$query_string;
     $url = '<a href="'.$url.'">'.$url.'</a>';
     return $url;
   }

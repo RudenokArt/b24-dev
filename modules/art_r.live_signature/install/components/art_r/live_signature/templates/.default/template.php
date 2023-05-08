@@ -48,7 +48,7 @@
 			<br>
 			https://<?php echo $_SERVER['SERVER_NAME'].$arResult->doc_view['SRC'];?>
 			<br>
-			<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=https://<?php echo $_SERVER['SERVER_NAME'].$arResult->doc_view['SRC'];?>"></iframe>
+			<iframe style="height: 50vh; width: 700px;" src="https://view.officeapps.live.com/op/embed.aspx?src=https://<?php echo $_SERVER['SERVER_NAME'].$arResult->doc_view['SRC'];?>"></iframe>
 		</div>
 
 		
