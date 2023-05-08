@@ -30,7 +30,7 @@ class art_r_live_signature extends CModule
 	}
 
 	function DoUninstall() {
-		// $GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
+		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
     // $this->UnInstallFiles();
 		UnRegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Uninstalling the module', __DIR__ . '/unstep.php');

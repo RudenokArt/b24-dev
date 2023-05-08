@@ -3,5 +3,6 @@ create table if not exists b_live_signature (
    DATE int(16) not null,
    DOCUMENT_ID int(11) not null,
    FILE_ID int(11) not null,
-   PASSWORD varchar(16),
+   PASSWORD varchar(16) not null,
+   SIGN int(11),
    primary key (ID));

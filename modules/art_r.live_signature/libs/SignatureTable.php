@@ -18,7 +18,8 @@ Loc::loadMessages(__FILE__);
  * <li> DATE int mandatory
  * <li> DOCUMENT_ID int mandatory
  * <li> FILE_ID int mandatory
- * <li> PASSWORD string(16) optional
+ * <li> PASSWORD string(16) mandatory
+ * <li> SIGN int optional
  * </ul>
  *
  * @package Bitrix\Live
@@ -76,8 +77,15 @@ class SignatureTable extends DataManager
 			new StringField(
 				'PASSWORD',
 				[
+					'required' => true,
 					'validation' => [__CLASS__, 'validatePassword'],
 					'title' => Loc::getMessage('SIGNATURE_ENTITY_PASSWORD_FIELD')
+				]
+			),
+			new IntegerField(
+				'SIGN',
+				[
+					'title' => Loc::getMessage('SIGNATURE_ENTITY_SIGN_FIELD')
 				]
 			),
 		];
