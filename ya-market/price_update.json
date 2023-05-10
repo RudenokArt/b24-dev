@@ -1,0 +1,19 @@
+{
+  "offers": [
+    {
+      "offerId": "",
+      "id": "",
+      "feed": {
+        "id": 0
+      },
+      "price": {
+        "value": 1500,
+        "discountBase": 1600,
+        "currencyId": "RUR",
+        "vat": 7,
+      },
+      "marketSku": 0,
+      "shopSku": "string"
+    }
+  ]
+}

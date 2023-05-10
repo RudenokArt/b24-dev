@@ -1,16 +1,13 @@
 <?php 
 
-/**
- * 
- */
-class ArtDebugger {
-	
-	public static function singleLog_txt ($str){
-		file_put_contents(
-			$_SERVER['DOCUMENT_ROOT'].'/local/log.txt',
-			$str
-		);
-	}
-}
+CModule::AddAutoloadClasses(
+    '', // не указываем имя модуля
+    array(
+        // ключ - имя класса с простанством имен, значение - путь относительно корня сайта к файлу
+      'lib\Debugger' => '/local/php_interface/lib/Debugger.php',
+    )
+  );
+
+
 
 ?>

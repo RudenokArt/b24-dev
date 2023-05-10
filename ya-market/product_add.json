@@ -1,0 +1,140 @@
+{
+  "offerMappingEntries": [
+    {
+      "offer": {
+        "name": "Модульная картина Юг Идеал 50*50 см Дерево",
+        "shopSku": "modular17",
+        "category": "Модульные картины",
+        "vendor": "Юг Идеал",
+        "vendorCode": "131695791",
+        "description": "Модульная картина. Размер: 30*40 см. Материал: Акрил",
+        "id": "1",
+        "feedId": 1,
+        "price": 1500,
+        "barcodes": [],
+        "urls": [
+          "http://cx57370-wordpress.tw1.ru/modular/?id=241"
+        ],
+        "pictures": [
+          "http://cx57370-wordpress.tw1.ru/wp-content/uploads/photo-gallery/imported_from_media_libray/131695790.jpg?"
+        ],
+        "manufacturer": "",
+        "manufacturerCountries": [
+          "Россия"
+        ],
+        "minShipment": 0,
+        "transportUnitSize": 0,
+        "quantumOfSupply": 0,
+        "deliveryDurationDays": 0,
+        "weightDimensions": {
+          "length": 40,
+          "width": 30,
+          "height": 5,
+          "weight": 2
+        },
+        "supplyScheduleDays": [
+          "MONDAY"
+        ],
+        "availability": "ACTIVE",
+        "certificate": ""
+      },
+      "rejectedMapping": {
+        "marketSku": 0,
+        "modelId": 0,
+        "categoryId": 0
+      }
+    }
+  ]
+}
+
+===============================================
+
+{
+  "offerMappingEntries": [
+    {
+      "offer": {
+        "name": "Модульная картина Юг Идеал 30*40 см Акрил",
+        "shopSku": "modular12345",
+        "category": "Модульные картины",
+        "vendor": "Юг Идеал",
+        "vendorCode": "131695790",
+        "description": "Модульная картина. Размер: 30*40 см. Материал: Акрил",
+        "id": "string",
+        "feedId": 0,
+        "price": 0,
+        "barcodes": [],
+        "urls": [
+          "http://cx57370-wordpress.tw1.ru/modular/?id=241"
+        ],
+        "pictures": [
+          "http://cx57370-wordpress.tw1.ru/wp-content/uploads/photo-gallery/imported_from_media_libray/131695790.jpg?"
+        ],
+        "manufacturer": "",
+        "manufacturerCountries": [
+          "Россия"
+        ],
+        "minShipment": 0,
+        "transportUnitSize": 0,
+        "quantumOfSupply": 0,
+        "deliveryDurationDays": 0,
+        "boxCount": 0,
+        "customsCommodityCodes": [
+          ""
+        ],
+        "weightDimensions": {
+          "length": 0,
+          "width": 0,
+          "height": 0,
+          "weight": 0
+        },
+        "supplyScheduleDays": [
+          "MONDAY"
+        ],
+        "shelfLifeDays": 0,
+        "lifeTimeDays": 0,
+        "guaranteePeriodDays": 0,
+        "processingState": {
+          "status": "UNKNOWN",
+          "notes": [
+            {
+              "type": "ASSORTMENT",
+              "payload": ""
+            }
+          ]
+        },
+        "availability": "ACTIVE",
+        "shelfLife": {
+          "timePeriod": 0,
+          "timeUnit": "HOUR",
+          "comment": ""
+        },
+        "lifeTime": {
+          "timePeriod": 0,
+          "timeUnit": "HOUR",
+          "comment": ""
+        },
+        "guaranteePeriod": {
+          "timePeriod": 0,
+          "timeUnit": "HOUR",
+          "comment": ""
+        },
+        "certificate": ""
+      },
+      "mapping": {
+        "marketSku": 0,
+        "modelId": 0,
+        "categoryId": 0
+      },
+      "awaitingModerationMapping": {
+        "marketSku": 0,
+        "modelId": 0,
+        "categoryId": 0
+      },
+      "rejectedMapping": {
+        "marketSku": 0,
+        "modelId": 0,
+        "categoryId": 0
+      }
+    }
+  ]
+}
