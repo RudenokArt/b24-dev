@@ -26,14 +26,14 @@ class art_r_live_signature extends CModule
 		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/install.sql');
 		RegisterModuleDependences('documentgenerator', 'onBeforeProcessDocument',
 			$this->MODULE_ID, '\Live\DocumentGeneratorHandler', 'customizeDocument');
-    // $this->InstallFiles();
+    $this->InstallFiles();
 		RegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Installing the module', __DIR__ . '/step.php');
 	}
 
 	function DoUninstall() {
 		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
-    // $this->UnInstallFiles();
+    $this->UnInstallFiles();
     UnRegisterModuleDependences('documentgenerator', 'onBeforeProcessDocument',
 			$this->MODULE_ID, '\Live\DocumentGeneratorHandler', 'customizeDocument');
 		UnRegisterModule($this->MODULE_ID);
@@ -42,19 +42,19 @@ class art_r_live_signature extends CModule
 
 	function InstallFiles()
 	{
-		CopyDirFiles(__DIR__.'/components/klimsol',
-			$_SERVER["DOCUMENT_ROOT"]."/local/components/klimsol", true, true);
-		CopyDirFiles(__DIR__."/tickets-FAQ", $_SERVER["DOCUMENT_ROOT"]."/tickets-FAQ/", true, true);
-		CopyDirFiles(__DIR__."/deal-fields-manager",
-			$_SERVER["DOCUMENT_ROOT"]."/deal-fields-manager/", true, true);
+		CopyDirFiles(__DIR__.'/components/art_r/live_signature/',
+			$_SERVER["DOCUMENT_ROOT"]."/local/components/art_r/live_signature/", true, true);
+		CopyDirFiles(__DIR__."/live_signature/", $_SERVER["DOCUMENT_ROOT"]."/live_signature/", true, true);
+		CopyDirFiles(__DIR__."/activities/custom/live_signature/",
+			$_SERVER["DOCUMENT_ROOT"]."/local/activities/custom/live_signature/", true, true);
 		return true;
 	}
 
 	function UnInstallFiles()
 	{
-		DeleteDirFilesEx("/local/components/klimsol");
-		DeleteDirFilesEx("/tickets-FAQ/");
-		DeleteDirFilesEx("/deal-fields-manager/");
+		DeleteDirFilesEx("/components/art_r/live_signature/");
+		DeleteDirFilesEx("/live_signature/");
+		DeleteDirFilesEx("/activities/custom/live_signature/");
 		return true;
 	}
 
