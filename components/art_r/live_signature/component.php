@@ -1,7 +1,13 @@
 <?php 
+
+if (isset($_POST['pdf_for_iframe'])) {
+	echo file_exists($_POST['pdf_for_iframe']);
+	exit();
+}
+
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
-include_once 'vendor/autoload.php';
-// CModule::includeModule('lisenkov.phpoffice');
+// include_once 'vendor/autoload.php';
+CModule::includeModule('lisenkov.phpoffice');
 CModule::IncludeModule('art_r.live_signature');
 \Bitrix\Main\Loader::includeModule('documentgenerator');
 
