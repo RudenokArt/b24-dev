@@ -1,34 +1,13 @@
 {
   "offers": [
     {
-      "offerId": "1",
-      "id": "1",
-      "feed": {
-        "id": 1
-      },
       "price": {
         "value": 1000,
         "discountBase": 1110,
         "currencyId": "RUR",
-        "vat": 6
-      },
-      "marketSku": 64760338,
-      "shopSku": "modular17"
-    }
-  ]
-}
-
-
-{
-  "offers": [
-    {
-      "offerId": "1",
-      "price": {
-        "value": 1000,
-        "discountBase": 1100,
-        "currencyId": "RUR",
         "vat": 7
       },
+      "shopSku": "modular18"
     }
   ]
 }

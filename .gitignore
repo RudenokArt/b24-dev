@@ -4,5 +4,5 @@
 *.docx
 *.jpg
 *.json
-!/ya-market/product_add.json
-!/ya-market/price_update.json
+!/ya-market/*
+!/OZON/*

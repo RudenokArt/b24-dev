@@ -34,6 +34,7 @@ class LiveSignature extends CBitrixComponent {
 		$this->live_signature['pdf_file_path'] = $_SERVER['DOCUMENT_ROOT'].$this->live_signature['pdf_file']['SRC'];
 
 		$this->live_signature['result_pdf_src'] = '/upload/live_signature/'.$this->live_signature['signature']['ID'].'.pdf';
+		$this->live_signature['result_jpg_src'] = '/upload/live_signature/'.$this->live_signature['signature']['ID'].'.jpg';
 		
 		if (isset($_POST['signature'])) {
 			$this->base64ToPng($_POST['signature']);
@@ -42,7 +43,11 @@ class LiveSignature extends CBitrixComponent {
 				'SIGNATURE' => 'Y',
 			]);
 			$this->live_signature['signature']['SIGNATURE'] = 'Y';
-			$this->convertToPdf($this->live_signature['doc_file']['ID'], $this->live_signature['result_pdf_src']);
+			$this->convertToPdf(
+				$this->live_signature['doc_file']['ID'],
+				$this->live_signature['result_pdf_src'],
+				$this->live_signature['result_jpg_src'],
+			);
 		}
 
 		$this->live_signature['show_pdf'] = $this->showPdf();
@@ -50,9 +55,6 @@ class LiveSignature extends CBitrixComponent {
 	}
 
 	function showPdf () {
-		// if ($this->live_signature['signature']['SIGNATURE'] == 'Y') {
-		// 	return 'https://'.$_SERVER['SERVER_NAME'].$this->live_signature['result_pdf_src'];
-		// }
 		copy($this->live_signature['pdf_file_path'], $this->live_signature['pdf_file_path'].'.pdf');
 		return $this->live_signature['pdf_file_url'].'.pdf';
 	}
@@ -71,7 +73,7 @@ class LiveSignature extends CBitrixComponent {
 		$_doc->saveAs($this->live_signature['doc_file_path']);
 	}
 
-	public static function convertToPdf($fileId, $result_pdf_src) { // b_file
+	public static function convertToPdf($fileId, $result_pdf_src, $result_jpg_src) { // b_file
 
 		$fileId = (int) $fileId;
 
@@ -80,6 +82,7 @@ class LiveSignature extends CBitrixComponent {
 			return $transformer->transform($fileId, ['pdf', 'jpg'], 'pull', \Bitrix\Live\Pdf::class, [
 				'fileId' => $fileId,
 				'result_pdf_src' => $result_pdf_src,
+				'result_jpg_src' => $result_jpg_src,
 			])->isSuccess();
 
 		}

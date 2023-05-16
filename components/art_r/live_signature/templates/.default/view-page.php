@@ -20,9 +20,6 @@
 	<div class="col-lg-8 col-md-12 col-sm-12">
 		<iframe src="<?php echo $arResult['show_pdf'];?>" id="show_pdf"
 			style="width: 100%; height: 80vh; border: none;"></iframe>
-		<!-- <iframe
-		style="width: 100%; height: 80vh;"
-		src="https://view.officeapps.live.com/op/embed.aspx?src=<?php echo $arResult['doc_file_url'];?>?v=<?php echo time();?>"></iframe> -->
 	</div>
 	<div class="col-lg-4 col-md-12 col-sm-12">
 		<?php if ($arResult['signature']['SIGNATURE'] == 'Y'): ?>
@@ -63,15 +60,28 @@
 			checkResultPdf();
 			function checkResultPdf () {
 				$('.preloader_wrapper').css({'display':'flex'});
-				$.post('', {pdf_for_iframe:"<?php echo $_SERVER['DOCUMENT_ROOT'].$arResult['result_pdf_src'];?>"}, function (data) {
+
+				$.post('', {
+					pdf_for_iframe:"<?php echo $_SERVER['DOCUMENT_ROOT'].$arResult['result_pdf_src'];?>",
+					jpg_result: "<?php echo $_SERVER['DOCUMENT_ROOT'].$arResult['result_jpg_src'];?>",
+				}, function (data) {
 					console.log(data);
 					if (!data) {
 						setTimeout(checkResultPdf, 1000);
 					} else {
 						$('#show_pdf').attr('src', "<?php echo $arResult['result_pdf_src'];?>");
 						$('.preloader_wrapper').css({'display':'none'});
+						$.post('', {
+							docx_result: "<?php echo $arResult['doc_file_path']; ?>",
+							jpg_result: "<?php echo $_SERVER['DOCUMENT_ROOT'].$arResult['result_jpg_src'];?>",
+							pdf_result: "<?php echo $_SERVER['DOCUMENT_ROOT'].$arResult['result_pdf_src'];?>",
+							pdf_update: "<?php echo $arResult['document']['ID']; ?>",
+						}, function() {
+							console.log(data);
+						});
 					}
 				});
+
 			}
 		});
 	</script>

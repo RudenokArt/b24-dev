@@ -2,6 +2,7 @@ https://oauth.yandex.ru/authorize?response_type=token&client_id=89b8381231c14356
 токен: y0_AgAAAABHHQGdAAna0QAAAADiYnYyH0pabVJYQMub2aCcx8Q34WY2IVk
 Номер компании: 60165900
 https://partner.market.yandex.ru/supplier/60165900/onboarding
+Документация к API: https://yandex.ru/dev/market/partner-api/doc/ru/reference/prices/updatePrices
 <hr>
 <?php
 

@@ -21,8 +21,9 @@ class Pdf implements \Bitrix\Transformer\InterfaceCallback {
 
 		// }
 
-		$test = $result['files']['pdf'];
+		
 		copy($result['files']['pdf'], $_SERVER['DOCUMENT_ROOT'].$params['result_pdf_src']);
+		copy($result['files']['jpg'], $_SERVER['DOCUMENT_ROOT'].$params['result_jpg_src']);
 
 		
 
