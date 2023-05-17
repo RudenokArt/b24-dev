@@ -16,12 +16,14 @@
 </style>
 
 
-<div class="row">
+<div class="row pb-5">
 	<div class="col-lg-8 col-md-12 col-sm-12">
-		<iframe src="<?php echo $arResult['show_pdf'];?>" id="show_pdf"
-			style="width: 100%; height: 80vh; border: none;"></iframe>
+		<!-- <iframe src="<?php echo $arResult['show_pdf'];?>" id="show_pdf"
+			style="width: 100%; height: 80vh; border: none;"></iframe> -->
+			<iframe id="show_pdf" src="https://docs.google.com/viewer?url=<?php echo $arResult['show_pdf'];?>&embedded=true" style="width: 100%; height: 80vh; border: none;"></iframe>
 	</div>
-	<div class="col-lg-4 col-md-12 col-sm-12">
+	<div class="col-lg-4 col-md-12 col-sm-12 live_signature-signature-bg">
+		<img src="<?php echo $this->getComponent()->getPath();?>/img/signature.png" alt="signature" class="w-100">
 		<?php if ($arResult['signature']['SIGNATURE'] == 'Y'): ?>
 			<div class="alert alert-success">
 				<?php echo GetMessage('allready_signed') ?>
@@ -30,13 +32,15 @@
 			<div id="signature" class="card"></div>
 			<div class="row pt-2">
 				<div class="col-6">
-					<button class="btn btn-outline-danger w-100" id="jSignature_reset">
+					<button class="btn btn-danger w-100" id="jSignature_reset">
 						<i class="fa fa-times" aria-hidden="true"></i>
+						<?php echo GetMessage('clear') ?>
 					</button>
 				</div>
 				<div class="col-6">
-					<button class="btn btn-outline-success w-100" id="jSignature_save">
+					<button class="btn btn-success w-100" id="jSignature_save">
 						<i class="fa fa-check" aria-hidden="true"></i>
+					<?php echo GetMessage('sign'); ?>
 					</button>
 				</div>
 				<form action="" method="post" id="jSignature_form">
@@ -69,8 +73,7 @@
 					if (!data) {
 						setTimeout(checkResultPdf, 1000);
 					} else {
-						$('#show_pdf').attr('src', "<?php echo $arResult['result_pdf_src'];?>");
-						$('.preloader_wrapper').css({'display':'none'});
+						// $('#show_pdf').attr('src', "<?php echo $arResult['result_pdf_src'];?>");
 						$.post('', {
 							docx_result: "<?php echo $arResult['doc_file_path']; ?>",
 							jpg_result: "<?php echo $_SERVER['DOCUMENT_ROOT'].$arResult['result_jpg_src'];?>",
@@ -78,6 +81,8 @@
 							pdf_update: "<?php echo $arResult['document']['ID']; ?>",
 						}, function() {
 							console.log(data);
+							$('#show_pdf').attr('src', "https://docs.google.com/viewer?url=<?php echo 'https://'.$_SERVER['SERVER_NAME'].$arResult['result_pdf_src'];?>&embedded=true");
+						$('.preloader_wrapper').css({'display':'none'});
 						});
 					}
 				});

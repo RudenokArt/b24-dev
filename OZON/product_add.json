@@ -5,9 +5,11 @@
       "depth": 10,
       "dimension_unit": "mm",
       "height": 250,
-      "images": [],
+      "images": [
+        "http://cx57370-wordpress.tw1.ru/wp-content/uploads/photo-gallery/imported_from_media_libray/131695790.jpg"
+      ],
       "images360": [],
-      "name": "Комплект защитных плёнок для X3 NFC. Темный хлопок",
+      "name": "Модульная картина 50*50 дерево",
       "offer_id": "143210608",
       "old_price": "1100",
       "pdf_list": [],
@@ -15,9 +17,10 @@
       "price": "1000",
       "primary_image": "",
       "vat": "0.1",
-      "weight": 100,
+      "weight": 10,
       "weight_unit": "g",
       "width": 150
     }
   ]
+}
 }

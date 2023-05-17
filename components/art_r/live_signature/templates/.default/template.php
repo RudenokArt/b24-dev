@@ -13,6 +13,11 @@
 	<!-- JS SiGNATURE -->
 	<script type="text/javascript" src="<?php echo $this->getComponent()->getPath();?>/jSignature/flashcanvas.js"></script>
 	<script src="<?php echo $this->getComponent()->getPath();?>/jSignature/jSignature.min.js"></script>
+
+	<link rel="stylesheet" href="<?php echo $this->getComponent()->getPath();?>/templates/.default/style.css">
+
+	
+
 </head>
 <body>
 	<div class="container pt-5">
@@ -31,5 +36,4 @@
 	</div>
 </body>
 </html>
-<pre><?php print_r($arResult); ?></pre>
 
