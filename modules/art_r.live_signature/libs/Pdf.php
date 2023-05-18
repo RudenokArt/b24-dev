@@ -1,5 +1,6 @@
 <?php
 namespace Bitrix\Live;
+\Bitrix\Main\Loader::includeModule('transformer');
 
 class Pdf implements \Bitrix\Transformer\InterfaceCallback {
 

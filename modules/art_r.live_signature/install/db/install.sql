@@ -4,4 +4,5 @@ create table if not exists b_live_signature (
    FILE_ID varchar(11) not null,
    PASSWORD varchar(11) not null,
    SIGNATURE varchar(8)  DEFAULT "N",
-   primary key (ID));
+   primary key (ID)
+   );
