@@ -5,9 +5,9 @@
         "value": 1000,
         "discountBase": 1110,
         "currencyId": "RUR",
-        "vat": 7
+        "vat": 6
       },
-      "shopSku": "modular18"
+      "shopSku": "modular23"
     }
   ]
 }

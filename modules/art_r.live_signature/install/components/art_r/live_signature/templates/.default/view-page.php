@@ -18,7 +18,7 @@
 
 <div class="row pb-5">
 	<div class="col-lg-8 col-md-12 col-sm-12">
-		<iframe id="show_pdf" src="https://docs.google.com/viewer?url=<?php echo $arResult['show_pdf'];?>&embedded=true" style="width: 100%; height: 80vh; border: none;"></iframe>
+		<iframe id="show_pdf" src="<?php echo $this->getComponent()->getPath();?>/pdf_viewer.php?path=<?php echo $arResult['show_pdf'];?>" style="width: 100%; height: 80vh; border: none;"></iframe>
 	</div>
 	<div class="col-lg-4 col-md-12 col-sm-12 live_signature-signature-bg">
 		<div class="row align-items-center">
@@ -59,7 +59,6 @@
 	</div>
 </div>
 
-
 <div class="preloader_wrapper" id="preloader_wrapper">
 	<div class="preloader_inner">
 		<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
@@ -89,7 +88,7 @@
 							pdf_update: "<?php echo $arResult['document']['ID']; ?>",
 						}, function() {
 							console.log(data);
-							$('#show_pdf').attr('src', "https://docs.google.com/viewer?url=<?php echo 'https://'.$_SERVER['SERVER_NAME'].$arResult['result_pdf_src'];?>&embedded=true");
+							$('#show_pdf').attr('src', "<?php echo $this->getComponent()->getPath();?>/pdf_viewer.php?path=<?php echo 'https://'.$_SERVER['SERVER_NAME'].$arResult['result_pdf_src'];?>");
 							$('#download_pdf').attr('href', "<?php echo 'https://'.$_SERVER['SERVER_NAME'].$arResult['result_pdf_src'];?>");
 							$('.preloader_wrapper').css({'display':'none'});
 						});
