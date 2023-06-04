@@ -21,7 +21,8 @@
 
 			'slider.php?userId=' + userId + '&filter=' + JSON.stringify({
 				dateFrom: BX.Award.Users.DATE_from,
-				dateTo: BX.Award.Users.DATE_to
+				dateTo: BX.Award.Users.DATE_to,
+				deal: BX.Award.Users.FILTER_DATA.deal,
 			}), {
 
 				width: 1200,
@@ -58,7 +59,6 @@
 	}
 
 	BX.Award.Users.CreateReport = function (btn) {
-
 		if (BX.Award.Users.ajaxIsAllowed) {
 
 			btn.button.classList.add('ui-btn-clock');

@@ -62,6 +62,7 @@ $APPLICATION->includeComponent(
 );
 ?>
 
+
 <script>
 
 	BX.ready(function () {
@@ -81,3 +82,5 @@ $APPLICATION->includeComponent(
 	});
 
 </script>
+
+<pre><?php print_r($arResult['debug']); ?></pre>
