@@ -1,6 +1,6 @@
 ;(function () {
 
-    BX.namespace('BX.Award.Users');
+	BX.namespace('BX.Award.Users');
 
 	BX.addCustomEvent('onPullEvent-lisenkov.award', BX.delegate(function (command, params) {
 
@@ -10,55 +10,73 @@
 			BX.Award.Users.DATE_to = params.DATE_to;
 			BX.Award.Users.SORT = params.SORT;
 			BX.Award.Users.FILTER_DATA = params.FILTER_DATA;
-			
+
 		}
 
 	}, this));
 
-    BX.Award.Users.ShowDetail = function (userId) {
+	BX.Award.Users.ShowDetail = function (userId) {
 
 		BX.SidePanel.Instance.open(
 
 			'slider.php?userId=' + userId + '&filter=' + JSON.stringify({
 				dateFrom: BX.Award.Users.DATE_from,
-				dateTo: BX.Award.Users.DATE_to
+				dateTo: BX.Award.Users.DATE_to,
+				deal: BX.Award.Users.FILTER_DATA.deal,
 			}), {
 
 				width: 1200,
-	            cacheable: false,
-	            allowChangeHistory: false,
-	            animationDuration: 200,
-	            label: {
-	                color: "#FFFFFF",
-	                bgColor: "#000000",
-	                opacity: 0
-	            }
+				cacheable: false,
+				allowChangeHistory: false,
+				animationDuration: 200,
+				label: {
+					color: "#FFFFFF",
+					bgColor: "#000000",
+					opacity: 0
+				}
 
 			}
 
-		);
+			);
 
 	}
 
 
 	BX.Award.Users.UpdateRows = function () {
 
-	    for(var i = 2; i < BX.Award.Users.Grid.rows.rows.length; i++) {
+		for(var i = 2; i < BX.Award.Users.Grid.rows.rows.length; i++) {
 
 			BX.Award.Users.Grid.rows.rows[i].node.style.cursor = 'help';
 
-	        BX.Award.Users.Grid.rows.rows[i].node.onclick = function () {
+			BX.Award.Users.Grid.rows.rows[i].node.onclick = function () {
 
-	            BX.Award.Users.ShowDetail(this.dataset.id);
+				BX.Award.Users.ShowDetail(this.dataset.id);
 
 			}
 
-	    }
+		}
+
+	}
+
+	BX.Award.Users.reloadGrid = function (del = false) {
+
+		let currentPage = BX.Award.Users.Grid.rows.rows.length - 3 > 0;
+		let page = document.querySelector('.main-ui-pagination-active').textContent;
+
+		if (del && !currentPage && page > 1) {
+			page -= 1;
+		}
+
+		let resPage = {};
+		resPage[BX.Award.Users.Grid.getId()] = 'page-' + page;
+		BX.Award.Users.Grid.baseUrl = BX.Grid.Utils.addUrlParams(BX.Award.Users.Grid.baseUrl, resPage);
+		BX.Award.Users.Grid.reloadTable();
+		BX.Award.Users.Grid.baseUrl = BX.Award.Users.Grid.baseUrl.replace('?' + BX.Award.Users.Grid.getId() + '=page-' + page, '');
+		BX.Award.Users.Grid.baseUrl = BX.Award.Users.Grid.baseUrl.replace('&' + BX.Award.Users.Grid.getId() + '=page-' + page, '');
 
 	}
 
 	BX.Award.Users.CreateReport = function (btn) {
-
 		if (BX.Award.Users.ajaxIsAllowed) {
 
 			btn.button.classList.add('ui-btn-clock');
@@ -117,7 +135,7 @@
 
 								}
 
-							);
+								);
 
 						});
 
@@ -139,6 +157,6 @@
 
 		}
 
-	}
+	};
 
 })();

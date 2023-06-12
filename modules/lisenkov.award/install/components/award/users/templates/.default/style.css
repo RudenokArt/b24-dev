@@ -15,3 +15,7 @@
 .workarea-content {
 	height: auto !important;
 }
+
+.ui-selector-tab-labels {
+	display: none;
+}

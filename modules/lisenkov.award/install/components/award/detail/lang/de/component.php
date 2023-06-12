@@ -4,4 +4,8 @@ $MESS['AWARD_DETAIL_DATE'] = 'Fälligkeitsdatum';
 $MESS['AWARD_DETAIL_TASK'] = 'Aufgabe';
 $MESS['AWARD_DETAIL_AWARD'] = 'Prämie';
 $MESS['AWARD_DETAIL_ALL_TIME'] = 'für alle Zeiten';
+$MESS['AWARD_DETAIL_DEAL'] = 'Aufträge';
+$MESS['CANCEL'] = 'Stornieren';
+$MESS['AMOUNT'] = 'Menge';
+$MESS['cancel_premium'] = 'Prämie kündigen'
 ?>

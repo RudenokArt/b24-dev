@@ -21,11 +21,17 @@ class AwardUsersAjaxController extends Bitrix\Main\Engine\Controller {
 		$url = Bitrix\Main\Engine\UrlManager::getHostUrl();
 		$baseCurrency = CCurrency::getBaseCurrency();
 
-		$awards = Bitrix\Lisenkov\AwardTable::getList([
-			'filter' => [
+		$filter = [
 				'USER_ID' => array_keys($users),
 				'><DATE' => $awardUsersComponent->date
-			]
+			];
+
+			if ($filterData['deal']) {
+				$filter['TASK'] = $awardUsersComponent->awardDealFilter($filterData['deal']);
+			}
+
+		$awards = Bitrix\Lisenkov\AwardTable::getList([
+			'filter' => $filter,
 		])->fetchAll();
 
 		foreach ($awards as $award) {
@@ -136,7 +142,12 @@ class AwardUsersAjaxController extends Bitrix\Main\Engine\Controller {
 
 		unlink($excel);
 
-		return ['id' => $file->getId(), 'fileId' => $file->getFileId(), 'name' => strstr($file->getName(), '.', true)];
+		return [
+			'id' => $file->getId(),
+			'fileId' => $file->getFileId(),
+			'name' => strstr($file->getName(), '.', true),
+			'filter' => $filterData['deal'],
+		];
 
 	}
 

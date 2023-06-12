@@ -78,7 +78,7 @@ class AwardTable extends DataManager {
 	}
 
 	public static function getList($params = [], bool $getCount = false) {
-		$select = ['T.TITLE', 'T.UF_CRM_TASK'];
+		$select = ['T.TITLE', 'T.UF_CRM_TASK', 'T.UF_TASKS_TASK_LISENKOV_AMOUNT'];
 		$params['select'] = $params['select'] ? array_merge($params['select'], $select) : array_merge(['*'], $select);
 		$params['runtime'] = [
 			'T' => [
@@ -101,11 +101,13 @@ class AwardTable extends DataManager {
 		$result->addFetchDataModifier(function(&$data) {
 			$data['TASK_ID'] = $data['TASK'];
 			$data['TASK_TITLE'] = $data['LISENKOV_AWARD_T_TITLE'];
+			$data['AMOUNT'] = $data['LISENKOV_AWARD_T_UF_TASKS_TASK_LISENKOV_AMOUNT'];
 			$data['TASK_CRM'] = $data['LISENKOV_AWARD_T_UF_CRM_TASK'];
 			$data['TASK'] = '<a href="/company/personal/user/' . $GLOBALS['USER']->GetID() . '/tasks/task/view/' . $data['TASK_ID'] . '/" onclick="event.stopPropagation()">' . $data['TASK_TITLE'] . '</a>';
 			unset($data['LISENKOV_AWARD_T_ID']);
 			unset($data['LISENKOV_AWARD_T_TITLE']);
 			unset($data['LISENKOV_AWARD_T_UF_CRM_TASK']);
+			unset($data['LISENKOV_AWARD_T_UF_TASKS_TASK_LISENKOV_AMOUNT']);
 		});
 		return $result;
 	}

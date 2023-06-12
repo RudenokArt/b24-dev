@@ -45,5 +45,19 @@ class AwardDetailComponent extends CBitrixComponent {
 
 	}
 
+
+	public static function awardDealFilter ($deal_id) {
+		$tasks_list = Bitrix\Tasks\TaskTable::getList([
+			'filter' => [
+				'UF_CRM_TASK' => $deal_id,
+			],
+			'select' => ['ID'],
+		])->fetchAll();
+		foreach ($tasks_list as $key => $value) {
+			$task_arr[] = $value['ID'];
+		}
+		return $task_arr;
+	}
+
 }
 ?>

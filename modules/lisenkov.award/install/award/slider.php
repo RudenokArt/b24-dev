@@ -13,6 +13,7 @@ $params = $request->getQuery('userId') ? [
 		'USER_ID' => $request->getQuery('userId'),
 		'DATE_FROM' => $date['dateFrom'],
 		'DATE_TO' => $date['dateTo'],
+		'DEAL' => $date['deal'],
 	]
 ] : [
 	'POPUP_COMPONENT_NAME' => 'award:report',
