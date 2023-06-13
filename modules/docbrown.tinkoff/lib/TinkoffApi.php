@@ -1,15 +1,13 @@
-
-
-<pre><?php print_r(new TinkoffApi()); ?></pre>
-
 <?php 
 
+namespace Bitrix\Docbrown;
 /**
  * 
  */
 class TinkoffApi {
 	
-	function __construct() {
+	function __construct($last_time) {
+		$this->last_time = $last_time;
 		$this->api_url = 'https://business.tinkoff.ru/openapi/sandbox/api/v1/';
 		$this->token = 'TinkoffOpenApiSandboxSecretToken';
 		$this->company = $this->restApiRequest($this->api_url.'company/');
@@ -20,13 +18,9 @@ class TinkoffApi {
 	}
 
 	function statement ($key) {
-		// $q_str = http_build_query([
-		// 	'accountNumber' => $this->accounts[$key]['accountNumber'],
-		// ]);
-		// return $this->restApiRequest($this->api_url.'bank-statement/?'.$q_str);
 		$q_str = http_build_query([
 			'accountNumber' => $this->accounts[$key]['accountNumber'],
-			'from' => '2023-06-01T00:00:00Z',
+			'from' => $this->last_time,
 		]);
 		return $this->restApiRequest($this->api_url.'statement/?'.$q_str);
 	}

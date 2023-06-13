@@ -6,3 +6,4 @@
 *.json
 !/ya-market/*
 !/OZON/*
+!/modules/docbrown.tinkoff/lib/rest-doc.txt

@@ -1,1 +1,0 @@
-drop table if exists b_live_signature;
