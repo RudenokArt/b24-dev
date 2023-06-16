@@ -21,11 +21,53 @@ class TinkoffRest {
 	function statement () {
 		$last_time = self::checkDate();
 		$api = new TinkoffApi($last_time);
+		foreach ($api->statements as $key => $value) {
+			foreach ($value['operations'] as $key1 => $value1) {
+				if ($value1['typeOfOperation'] == 'Credit') {
+					preg_match_all('#LEAD_[0-9]+|DEAL_[0-9]+#', $value1['payPurpose'], $matches);
+					$operations[] = [
+						'operationDate' => self::dateToTime($value1['operationDate']),
+						'operationId' => $value1['operationId'],
+						'accountNumber' => $value1['accountNumber'],
+						'operationAmount' => $value1['operationAmount'],
+						'operationCurrencyDigitalCode' => $value1['operationCurrencyDigitalCode'],
+						'payPurpose' => $value1['payPurpose'],
+						'payer' => $value1['payer']['name'],
+						'crm' => $matches[0][0],
+					];
+				}
+			}
+		}
+		$add = self::saveData($operations);
 		return [
+			'errors' => $add,
+			'operations' => $operations,
 			'last_time' => $last_time,
 			'db_data' => $list,
-			'bank_data' => $api->statements
+			'bank_data' => $api->statements,
 		];
+	}
+
+	public static function saveData ($operations) {
+		foreach ($operations as $key => $value) {
+			$add = TinkoffTable::validatedAdd([
+				'DATE'=> $value['operationDate'],
+				'OPERATION_ID'=> $value['operationId'],
+				'ACCOUNT'=> $value['accountNumber'],
+				'AMOUNT'=> $value['operationAmount'],
+				'CURRENCY'=> $value['operationCurrencyDigitalCode'],
+				'PURPOSE'=> $value['payPurpose'],
+				'PAYER'=> $value['payer'],
+				'CRM_ID'=> $value['crm'],
+			]);
+			$arr[] = $add;
+		}
+		return $arr;
+	}
+
+	function dateToTime ($str) {
+		$arr = explode('T', $str);
+		return strtotime($arr[0].' '.str_replace('Z', '', $arr[1]));
 	}
 
 	public static function checkDate () {
@@ -35,7 +77,7 @@ class TinkoffRest {
 		if ($operation) {
 			$last_time = $operation['DATE'];
 		} else {
-			$last_time = strtotime('2023-01-01');
+			$last_time = strtotime('2023-06-01');
 		}
 		$last_date = date('Y-m-d',$last_time).'T'.date('H:i:s',$last_time).'Z';
 		return $last_date;
