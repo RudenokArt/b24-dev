@@ -61,6 +61,7 @@ class TinkoffRest {
 				'CRM_ID'=> $value['crm'],
 			]);
 			$arr[] = $add;
+			\Bitrix\Docbrown\TinkoffTable::setPaymentProps($value['crm']);
 		}
 		return $arr;
 	}

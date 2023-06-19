@@ -18,6 +18,7 @@ if ($_GET['update']) {
 	$arResult['total'] = $this->total;
 	$arResult['nav'] = $this->nav;
 	$arResult['operationsList'] = $this->data['operationsList'];
+	$arResult['filter'] = $this->filter;
 }
 
 

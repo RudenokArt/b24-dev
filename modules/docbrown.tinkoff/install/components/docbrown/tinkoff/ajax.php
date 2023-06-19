@@ -29,11 +29,11 @@ class TinkoffCrmdController extends Controller {
 			'filter' => ['ID' => $item,],
 		])->fetch();
 		if ($tinkoff) {
-			\Bitrix\Docbrown\TinkoffTable::update($tinkoff['ID'], [
+			$update = \Bitrix\Docbrown\TinkoffTable::update($tinkoff['ID'], [
 				'CRM_ID' => $e_type.$arr[1],
 			]);
+			return \Bitrix\Docbrown\TinkoffTable::setPaymentProps($e_type.$arr[1]);
 		}
-		return $e_type.$arr[1];
 	}
 }
 ?>

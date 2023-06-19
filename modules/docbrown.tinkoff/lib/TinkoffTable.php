@@ -192,6 +192,22 @@ class TinkoffTable extends DataManager
 		];
 	}
 
+	public static $paymentPropsArr = [
+		'UF_CRM_63D8DD8E5F437' => true,
+		'UF_CRM_1673890981675' => true,
+	];
+
+	public static function setPaymentProps ($crm) {
+		\Bitrix\Main\Loader::includeModule('crm');
+		$arr = explode('_', $crm);
+		if ($arr[0] == 'LEAD') {
+			\Bitrix\Crm\LeadTable::update($arr[1], self::$paymentPropsArr);		
+		} elseif ($arr[0] == 'DEAL') {
+			\Bitrix\Crm\DealTable::update($arr[1], self::$paymentPropsArr);
+		}
+		return $arr;
+	}
+
 	public static function validatedAdd(array $arFields)
 	{
 		try {

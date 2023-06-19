@@ -1,6 +1,25 @@
 <?php 
 use Bitrix\UI\Toolbar\Facade\Toolbar;
 Toolbar::DeleteFavoriteStar();
+$APPLICATION->SetTitle('Tinkoff bank');
+Toolbar::setTitle('test');
+Toolbar::AddFilter([ 
+	'FILTER_ID' => 'tinkoff_operations_filter', 
+	'GRID_ID' => 'tinkoff_operations_list', 
+	'FILTER' => [ 
+		['id' => 'DATE', 'name' => GetMessage('DATE'), 'type' => 'date',],
+		['id' => 'OPERATION_ID', 'name' => GetMessage('OPERATION_ID'), 'type' => 'string',],
+		['id' => 'ACCOUNT', 'name' => GetMessage('ACCOUNT'), 'type' => 'string',],
+		['id' => 'CURRENCY', 'name' => GetMessage('CURRENCY'), 'type' => 'list', 'items' => $arResult['currency_list'],],
+		['id' => 'PURPOSE', 'name' => GetMessage('PURPOSE'), 'type' => 'string',],
+		['id' => 'PAYER', 'name' => GetMessage('PAYER'), 'type' => 'string',],
+		['id' => 'CRM_ID', 'name' => GetMessage('CRM_ID'), 'type' => 'string',],
+	],
+  'ENABLE_LIVE_SEARCH' => true, 
+	'ENABLE_LABEL' => true,
+	'DISABLE_SEARCH' => true,
+]);
+
 $APPLICATION->IncludeComponent(
 	'bitrix:main.ui.grid',
 	'',
@@ -87,5 +106,3 @@ $APPLICATION->IncludeComponent(
 		};
 
 	</script>
-
-<pre><?php print_r($arResult['operationsList']); ?></pre>
