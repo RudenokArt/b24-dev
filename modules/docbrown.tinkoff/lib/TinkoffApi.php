@@ -9,7 +9,8 @@ class TinkoffApi {
 	function __construct($last_time) {
 		$this->last_time = $last_time;
 		$this->api_url = 'https://business.tinkoff.ru/openapi/api/v1/';
-		$this->token = 't.jKSRfYE-LT4zg1HE0fIedUtoZkphW5OTAzCQDOImEXF2sKpoyr5ckWipW3ZTFDvoR3rGGRmRL-tJLadgR11LPw';
+		// $this->token = 't.jKSRfYE-LT4zg1HE0fIedUtoZkphW5OTAzCQDOImEXF2sKpoyr5ckWipW3ZTFDvoR3rGGRmRL-tJLadgR11LPw';
+		$this->token = 't.-Rc7QpMtFYtdxN7644SJGXTkflw33WFKgsoHtweRhRcn4JBso1MUVnz9kjuXWBK5QbIKJuVE5-Kus3998ezPlA';
 		$this->company = $this->restApiRequest($this->api_url.'company/');
 		$this->accounts = $this->restApiRequest($this->api_url.'bank-accounts/');
 		foreach ($this->accounts as $key => $value) {

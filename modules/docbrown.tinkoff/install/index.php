@@ -29,6 +29,8 @@ class docbrown_tinkoff extends CModule
 		RegisterModuleDependences('rest', 'OnRestServiceBuildDescription', 
 			$this->MODULE_ID, 'Bitrix\Docbrown\TinkoffRest', 'OnRestServiceBuildDescription');
 
+		$this->InstallFiles();
+
 		RegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Installing the module', __DIR__ . '/step.php');
 	}
@@ -40,8 +42,28 @@ class docbrown_tinkoff extends CModule
 		UnRegisterModuleDependences('rest', 'OnRestServiceBuildDescription', 
 			$this->MODULE_ID, 'Bitrix\Docbrown\TinkoffRest', 'OnRestServiceBuildDescription');
 
+		$this->unInstallFiles();
+
 		UnRegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Uninstalling the module', __DIR__ . '/unstep.php');
+	}
+
+	function InstallFiles()	{
+		CopyDirFiles(
+			__DIR__.'/tinkoff/',
+			$_SERVER['DOCUMENT_ROOT'].'/tinkoff/', true, true
+		);
+		CopyDirFiles(
+			__DIR__.'/components/docbrown/tinkoff/',
+			$_SERVER['DOCUMENT_ROOT'].'/local/components/docbrown/tinkoff/', true, true
+		);
+		return true;
+	}
+
+	function UnInstallFiles()	{
+		DeleteDirFilesEx('/tinkoff/');
+		DeleteDirFilesEx('/local/components/docbrown/tinkoff/');
+		return true;
 	}
 
 	

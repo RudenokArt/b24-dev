@@ -48,8 +48,27 @@ class TinkoffRest {
 		];
 	}
 
+		public static function checkCrmId ($crm) {
+		\Bitrix\Main\Loader::includeModule('crm');
+		$arr = explode('_', $crm);
+		if ($arr[0] == 'LEAD') {
+			$check = \Bitrix\Crm\LeadTable::getList([
+				'filter' => ['ID' => $arr[1],],
+			])->fetch();		
+		} elseif ($arr[0] == 'DEAL') {
+			$check = \Bitrix\Crm\DealTable::getList([
+				'filter' => ['ID' => $arr[1],],
+			])->fetch();
+		}
+		if ($check) {
+			return $crm;
+		}
+		return null;
+	}
+
 	public static function saveData ($operations) {
 		foreach ($operations as $key => $value) {
+			$crm = self::checkCrmId($value['crm']);
 			$add = TinkoffTable::validatedAdd([
 				'DATE'=> $value['operationDate'],
 				'OPERATION_ID'=> $value['operationId'],
@@ -58,7 +77,7 @@ class TinkoffRest {
 				'CURRENCY'=> $value['operationCurrencyDigitalCode'],
 				'PURPOSE'=> $value['payPurpose'],
 				'PAYER'=> $value['payer'],
-				'CRM_ID'=> $value['crm'],
+				'CRM_ID'=> $crm,
 			]);
 			$arr[] = $add;
 			\Bitrix\Docbrown\TinkoffTable::setPaymentProps($value['crm']);
