@@ -1,0 +1,9 @@
+.deal_detail-status_list {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.deal_detail-status_item {
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
+}

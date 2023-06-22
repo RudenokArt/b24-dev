@@ -4,7 +4,6 @@ use Bitrix\UI\Toolbar\Facade\Toolbar;
 \Bitrix\Main\UI\Extension::load("ui.icons.b24");
 Toolbar::DeleteFavoriteStar();
 $APPLICATION->SetTitle('Tinkoff bank');
-Toolbar::setTitle('test');
 Toolbar::AddFilter([ 
 	'FILTER_ID' => 'tinkoff_operations_filter', 
 	'GRID_ID' => 'tinkoff_operations_list', 

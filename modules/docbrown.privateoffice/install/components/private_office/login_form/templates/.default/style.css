@@ -1,0 +1,8 @@
+.login_form-bg {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+.login_form-card {
+	background-color: rgba(250, 250, 250, 0.9);
+}

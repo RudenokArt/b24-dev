@@ -2,7 +2,7 @@
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 \Bitrix\Main\Loader::includeModule('crm');
 \Bitrix\Main\Loader::includeModule('docbrown.tinkoff');
-CJSCore::Init(array("jquery","ui.bootstrap4"));
+CJSCore::Init(array("jquery"));
 
 $currency_src = CCurrency::GetList();	
 while ($currency_item = $currency_src->fetch()) {
