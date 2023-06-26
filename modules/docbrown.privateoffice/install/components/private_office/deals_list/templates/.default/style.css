@@ -1,23 +1,7 @@
-.deals_list-wrapper {
-	min-height: 100vh;
-	width: 100%;
-}
-
-.deals_list-bg {
-	height: 100vh;
-	width: 100vw;
-	position: fixed;
-	top:0;
-	left: 0;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
-	z-index: -1;
-}
 
 .deals_list-greed {
 	background-color: rgba(255, 255, 255, 0.8);
-	margin-top:50vh;
+	margin-top:20vh;
 }
 
 .deals_list-item {

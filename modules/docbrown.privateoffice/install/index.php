@@ -26,16 +26,38 @@ class docbrown_privateoffice extends CModule
 
 		$this->installContactFields();
 
+		$this->iBlockInstall();
+
 		RegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Installing the module', __DIR__ . '/step.php');
 	}
 
 	function DoUninstall() {
 
-		
-
 		UnRegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Uninstalling the module', __DIR__ . '/unstep.php');
+	}
+
+	function iBlockInstall () {
+		$iblock_check = \Bitrix\Iblock\IblockTable::getList([
+			'filter' => [
+				'CODE' => 'FAQ',
+				'IBLOCK_TYPE_ID'=>'services'
+			],
+		])->fetch();
+
+		if (!$iblock_check) {
+			$add = \Bitrix\Iblock\IblockTable::add([
+				'IBLOCK_TYPE_ID' => 'services',
+				'LID' => 's1',
+				'CODE' => 'FAQ',
+				'NAME' => 'FAQ',
+				'ACTIVE' => 'Y',
+				'SORT' => 500,
+				'DESCRIPTION' => 'FAQ for private office',
+				'WORKFLOW' => 'N',
+			]);
+		}
 	}
 
 	function installContactFields () {

@@ -16,11 +16,12 @@
 		header('Location: /login/');
 	}
 	?>
+	<link rel="stylesheet" href="<?php echo SITE_TEMPLATE_PATH.'/assets/css/style.css';?>">
 	<link rel="icon" href="<?php echo SITE_TEMPLATE_PATH.'/assets/img/favicon.ico';?>" type="image/x-icon">
 	<title><?php echo $APPLICATION->ShowTitle(); ?></title>
 </head>
 <body>
-
+<div style="background-image: url(<?php echo SITE_TEMPLATE_PATH.'/assets/img/main-bg.webp';?>);" class="private_office-main_bg"></div>
 	<?php if ($_SERVER['SCRIPT_URL'] != '/login/'): ?>
 		<div class="header bg-light">
 			<div class="container pt-1 pb-1">
@@ -34,7 +35,7 @@
 					<div class="col-lg-2 col-md-4 col-sm-6 p-1 pt-3">
 						<div class="row">
 							<div class="col-10">
-								<?php 
+								<?php
 								$APPLICATION->IncludeComponent(
 									"private_office:contact",
 									"",
@@ -45,7 +46,7 @@
 							<div class="col-2">
 								<a href="/login/?logout=Y" class="h5">
 									<i class="fa fa-sign-out" aria-hidden="true"></i>
-								</a>		
+								</a>
 							</div>
 						</div>
 					</div>

@@ -1,10 +1,7 @@
-<div class="deals_list-wrapper">
-	<div class="deals_list-bg" style="background-image: url(<?php echo $this->getComponent()->getPath().'/img/deals-list.avif';?>);">
-	</div>
-	<div class="container pb-5 deals_list-greed card">
+<div class="container pb-5 pt-5 deals_list-greed card">
 		<?php if ($arResult['deals_arr']): ?>
 			<?php foreach ($arResult['deals_arr'] as $key => $value): ?>
-				<a href="/deal/<?php echo $value['ID'];?>" class="row deals_list-item p-2 mt-1">
+				<a href="/deal/<?php echo $value['ID'];?>" class="row deals_list-item p-2 mt-1 bg-light">
 					<div class="col-lg-2 col-md-2 col-sm-6">
 						<?php echo $value['DATE_CREATE']->format('Y-m-d'); ?>
 					</div>
@@ -36,4 +33,3 @@
 			</div>
 		<?php endif ?>
 	</div>
-</div>
