@@ -8,8 +8,14 @@ class DealsList extends CBitrixComponent {
 	function init ($contact_id) {
 		$this->data['categories_list'] = Bitrix\Crm\Category\DealCategory::getAll(true);
 		$this->data['categories_arr'] = $this->getCategoriesArr();
+		if ($contact_id) {
+			$dealsIdArr = \Bitrix\Crm\Binding\DealContactTable::getContactDealIDs($contact_id);
+		} else {
+			$dealsIdArr = [];
+		}
 		$this->data['deals_list'] = \Bitrix\Crm\DealTable::getList([
-			'filter' => ['CONTACT_ID' => $contact_id,],
+			'filter' => ['ID' => $dealsIdArr,],
+			// 'filter' => ['CONTACT_ID' => $contact_id],
 			'order' => ['ID'=>'DESC'],
 			'select' => [
 				'ID',

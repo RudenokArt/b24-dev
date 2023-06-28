@@ -39,9 +39,19 @@
 		</ul>
 	</div>
 	<div v-if="currentTab=='DETAILS'" class="p-2">
-		<?php foreach ($arResult['deal'] as $key => $value): ?>
-			<?php echo $arResult['deal_fields'][$key]['title']; ?>: <?php echo $value; ?> <br>
-		<?php endforeach ?>
+		<div class="row">
+			<?php foreach ($arResult['deal'] as $key => $value): ?>
+				<div class="col-lg-6 col-md-12 col-sm-12">
+
+					<div class="input-group mb-3">
+						<span class="input-group-text bg-light w-50" id="basic-addon<?php echo $key ?>"><?php echo $arResult['deal_fields'][$key]['title']; ?></span>
+						<input type="text" class="form-control" value="<?php echo $value; ?>" aria-describedby="basic-addon<?php echo $key ?>" disabled>
+					</div>
+
+					
+				</div>
+			<?php endforeach ?>
+		</div>		
 	</div>
 	<div v-if="currentTab=='FAQ'" class="p-2">
 
@@ -197,6 +207,7 @@
 				}, function (data) {});
 				console.log(this.ticketsList);
 				this.ticketsList = JSON.parse(json);
+				$('button[data-dismiss="modal"]').click();
 			},
 
 			setCurrentTab: function (tab) {

@@ -2,8 +2,9 @@
 
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 Bitrix\Main\Loader::includeModule('crm');
+$APPLICATION->SetTitle('profile');
 
-$this->init($_SESSION['private_office']['contact']);
+$this->init();
 $arResult = $this->data;
 
 $this->IncludeComponentTemplate();

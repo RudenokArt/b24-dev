@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 /**
- * 
+ *
  */
 class DealDetail extends CBitrixComponent {
 
@@ -22,6 +22,7 @@ class DealDetail extends CBitrixComponent {
 				'BEGINDATE',
 				'CLOSEDATE',
 				'LAST_ACTIVITY_TIME',
+				'ASSIGNED_BY_ID'
 			],
 		])->fetch();
 

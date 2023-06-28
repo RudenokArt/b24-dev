@@ -1,0 +1,34 @@
+.profile-main_bg {
+	background: rgba(255, 255, 255, 0.9);
+}
+
+#contact_photo_form {
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+#contact_photo_upload {
+	position:absolute;
+	top:0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+	border:1px solid red;
+}
+
+.contact_photo_upload-bg {
+	font-size: 100px;
+}
+
+.contact-photo {
+	font-size: 100px;
+}
+
+.contact-photo {
+	line-height: 0;
+}
+.contact-photo img {
+	height: 120px;
+}
