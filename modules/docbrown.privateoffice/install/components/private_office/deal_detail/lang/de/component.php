@@ -4,6 +4,7 @@ $MESS['DEAL'] = 'Auftrag';
 $MESS['DETAILS'] = 'Details';
 $MESS['FAQ'] = 'FAQ';
 $MESS['SUPPORT'] = 'Support';
+$MESS['CHAT'] = 'Chat';
 $MESS['Add_new_case'] = 'Neuen Fall hinzufügen';
 $MESS['SEND'] = 'schicken';
 

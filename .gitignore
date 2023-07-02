@@ -4,6 +4,6 @@
 *.docx
 *.jpg
 *.json
-!/ya-market/*
+!/YA_MARKET/*
 !/OZON/*
 !/modules/docbrown.tinkoff/lib/rest-doc.txt

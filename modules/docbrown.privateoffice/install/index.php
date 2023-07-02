@@ -24,6 +24,8 @@ class docbrown_privateoffice extends CModule
 
 	function DoInstall() {
 
+		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/install.sql');
+
 		$this->installContactFields();
 
 		$this->iBlockInstall();
@@ -34,6 +36,8 @@ class docbrown_privateoffice extends CModule
 
 	function DoUninstall() {
 
+		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
+		
 		UnRegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Uninstalling the module', __DIR__ . '/unstep.php');
 	}
@@ -80,6 +84,7 @@ class docbrown_privateoffice extends CModule
 			),
 		);
 		$oUserTypeEntity->Add( $aUserFields_log ); 
+
 		$aUserFields_pas = array(
 			'ENTITY_ID' => 'CRM_CONTACT',
 			'FIELD_NAME' => 'UF_USER_PASSWORD',
@@ -96,7 +101,6 @@ class docbrown_privateoffice extends CModule
 				'de' => 'Passwort für Privatkabinett',
 			),
 		);
-
 		$oUserTypeEntity->Add( $aUserFields_pas ); 
 
 	}

@@ -29,7 +29,7 @@
 <div class="card p-1 mt-5">
 	<div class="bg-light">
 		<ul class="nav nav-tabs">
-			<?php foreach (['DETAILS', 'FAQ', 'SUPPORT'] as $key => $value): ?>
+			<?php foreach (['DETAILS', 'FAQ', 'SUPPORT', 'CHAT'] as $key => $value): ?>
 				<li class="nav-item" v-on:click.prevent="setCurrentTab('<?php echo $value; ?>')">
 					<a class="nav-link" href="#" v-bind:class="isActiveTab('<?php echo $value; ?>')">
 						<?php echo GetMessage($value); ?>
@@ -38,6 +38,7 @@
 			<?php endforeach ?>
 		</ul>
 	</div>
+
 	<div v-if="currentTab=='DETAILS'" class="p-2">
 		<div class="row">
 			<?php foreach ($arResult['deal'] as $key => $value): ?>
@@ -47,14 +48,12 @@
 						<span class="input-group-text bg-light w-50" id="basic-addon<?php echo $key ?>"><?php echo $arResult['deal_fields'][$key]['title']; ?></span>
 						<input type="text" class="form-control" value="<?php echo $value; ?>" aria-describedby="basic-addon<?php echo $key ?>" disabled>
 					</div>
-
-					
 				</div>
 			<?php endforeach ?>
 		</div>		
 	</div>
-	<div v-if="currentTab=='FAQ'" class="p-2">
 
+	<div v-if="currentTab=='FAQ'" class="p-2">
 		<div class="accordion" id="accordionFAQ">
 			<?php foreach ($arResult['FAQ_list'] as $key => $value): ?>
 				<div class="card">
@@ -74,11 +73,9 @@
 				</div>
 			<?php endforeach ?>		
 		</div>
-
 	</div>
 
 	<div v-if="currentTab=='SUPPORT'" class="p-2">
-
 		<!-- Button trigger modal -->
 		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
 			<?php echo GetMessage('Add_new_case') ?>
@@ -101,6 +98,17 @@
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div v-if="currentTab=='CHAT'" class="p-2">
+		<?php 
+		$APPLICATION->IncludeComponent(
+			"private_office:deal_chat",
+			"", [
+				'DEAL' => $arResult['deal'],
+			]
+		);
+		?>
 	</div>
 
 </div>
@@ -224,4 +232,3 @@
 
 	});
 </script>
-<pre class="bg-light" style="margin-top: 50vh"><?php print_r($arResult['deal']); ?></pre>
