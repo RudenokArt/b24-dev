@@ -1,5 +1,5 @@
 <?php 
-
+CModule::includeModule('lisenkov.dompdf');
 \Bitrix\Main\Loader::RegisterAutoLoadClasses(
   'docbrown.tinkoff', [
     'Bitrix\Docbrown\TinkoffRest' => 'lib/TinkoffRest.php',

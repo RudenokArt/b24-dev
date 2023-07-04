@@ -7,15 +7,7 @@ $APPLICATION->SetTitle('Tinkoff bank');
 Toolbar::AddFilter([ 
 	'FILTER_ID' => 'tinkoff_operations_filter', 
 	'GRID_ID' => 'tinkoff_operations_list', 
-	'FILTER' => [ 
-		['id' => 'DATE', 'name' => GetMessage('DATE'), 'type' => 'date',],
-		['id' => 'OPERATION_ID', 'name' => GetMessage('OPERATION_ID'), 'type' => 'string',],
-		['id' => 'ACCOUNT', 'name' => GetMessage('ACCOUNT'), 'type' => 'string',],
-		['id' => 'CURRENCY', 'name' => GetMessage('CURRENCY'), 'type' => 'list', 'items' => $arResult['currency_list'],],
-		['id' => 'PURPOSE', 'name' => GetMessage('PURPOSE'), 'type' => 'string',],
-		['id' => 'PAYER', 'name' => GetMessage('PAYER'), 'type' => 'string',],
-		['id' => 'CRM_ID', 'name' => GetMessage('CRM_ID'), 'type' => 'string',],
-	],
+	'FILTER' => $arResult['filterFieldsList'],
   'ENABLE_LIVE_SEARCH' => true, 
 	'ENABLE_LABEL' => true,
 	'DISABLE_SEARCH' => true,
@@ -33,23 +25,14 @@ $APPLICATION->IncludeComponent(
 	'',
 	[
 		'GRID_ID' => 'tinkoff_operations_list', 
-		'COLUMNS' => [
-			['id' => 'ID', 'name' => 'ID', 'sort' => 'ID', 'default' => true], 
-			['id' => 'DATE', 'name' => GetMessage('DATE'), 'sort' => 'DATE', 'default' => true],
-			['id' => 'OPERATION_ID', 'name' => GetMessage('OPERATION_ID'), 'sort' => 'OPERATION_ID', 'default' => true],
-			['id' => 'ACCOUNT', 'name' => GetMessage('ACCOUNT'), 'sort' => 'ACCOUNT', 'default' => true],
-			['id' => 'AMOUNT', 'name' => GetMessage('AMOUNT'), 'sort' => 'AMOUNT', 'default' => true],
-			['id' => 'CURRENCY', 'name' => GetMessage('CURRENCY'), 'sort' => 'CURRENCY', 'default' => true],
-			['id' => 'PURPOSE', 'name' => GetMessage('PURPOSE'), 'sort' => 'PURPOSE', 'default' => true],
-			['id' => 'PAYER', 'name' => GetMessage('PAYER'), 'sort' => 'PAYER', 'default' => true],
-			['id' => 'CRM_ID', 'name' => GetMessage('CRM_ID'), 'sort' => 'CRM_ID', 'default' => true],
-		], 
+		'COLUMNS' => $arResult['gridFieldsList'],
 		'ROWS' => $arResult['operationsList'],
 		'SHOW_ROW_CHECKBOXES' => false, 
 		'NAV_OBJECT' => $arResult['nav'], 
 		'AJAX_MODE' => 'Y', 
 		'AJAX_ID' => \CAjax::getComponentID('bitrix:main.ui.grid', '.default', ''), 
 		'PAGE_SIZES' => [ 
+			['NAME' => "2", 'VALUE' => '2'],
 			['NAME' => "5", 'VALUE' => '5'], 
 			['NAME' => '10', 'VALUE' => '10'], 
 			['NAME' => '20', 'VALUE' => '20'], 
@@ -78,6 +61,8 @@ $APPLICATION->IncludeComponent(
 
 
 ?>
+
+<pre><?php print_r($arResult['filter']) ?></pre>
 
 <script>
 

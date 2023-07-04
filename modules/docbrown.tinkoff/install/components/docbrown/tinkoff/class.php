@@ -7,10 +7,10 @@ class TinkoffComponent extends CBitrixComponent {
 	
 	function init ($currency_list) {
 
+		$this->currency_list = $currency_list;
+		$this->getGridFieldsList(\Bitrix\Docbrown\TinkoffTable::getList()->fetch());
 		$this->getGridOptions();
 		$this->getGridFilter();
-
-		$this->currency_list = $currency_list;
 
 		$this->data['operationsArr'] = \Bitrix\Docbrown\TinkoffTable::getList([
 			'offset' => $this->nav->getOffset(),
@@ -20,7 +20,59 @@ class TinkoffComponent extends CBitrixComponent {
 		])->fetchAll();
 
 		$this->data['operationsList'] = $this->operationsList($this->data['operationsArr']);
+	}
 
+	function getGridFieldsList ($operation) {
+
+		foreach ($operation as $key => $value) {
+
+			if (GetMessage($key)) {
+				$fieldname = GetMessage($key);
+			} else {
+				$fieldname = $key;
+			}
+
+			$this->data['gridFieldsList'][] = [
+				'id' => $key,
+				'name' => $fieldname,
+				'sort' => $key,
+				'default' => true,
+			];
+
+			if ($key == 'operationDate') {
+				$this->data['filterFieldsList'][] = [
+					'id' => $key,
+					'name' =>  $fieldname,
+					'type' =>  'date',
+					'default' => true,
+				];
+			} elseif ($key == 'operationCurrencyDigitalCode' or $key == 'accountCurrencyDigitalCode') {
+				$this->data['filterFieldsList'][] = [
+					'id' => $key,
+					'name' =>  $fieldname,
+					'type' => 'list',
+					'items' => $this->currency_list,
+					'default' => true,
+				];
+			} elseif (
+				$key == 'trxnPostDate'
+				or
+				$key == 'authorizationDate'
+				or
+				$key == 'drawDate'
+				or
+				$key == 'chargeDate'
+				or
+				$key == 'docDate'
+			) {} else {
+				$this->data['filterFieldsList'][] = [
+					'id' => $key,
+					'name' =>  $fieldname,
+					'type' => 'string',
+					'default' => true,
+				];
+			}
+		}
 	}
 
 	function getGridFilter () {
@@ -33,48 +85,20 @@ class TinkoffComponent extends CBitrixComponent {
 			$filter[$k] = $v;            
 		}
 
-		if ($filter['DATE_from']) {
+		if ($filter['operationDate_from']) {
 			$grid_filter[] = array(
 				'LOGIC' => 'AND',
-				array('<=DATE' => MakeTimeStamp($filter['DATE_to']),),
-				array('>=DATE' => MakeTimeStamp($filter['DATE_from']),),
+				array('<=operationDate' => MakeTimeStamp($filter['operationDate_to']),),
+				array('>=operationDate' => MakeTimeStamp($filter['operationDate_from']),),
 			);
 		}
 
-		if ($filter['OPERATION_ID']) {
-			$grid_filter['%OPERATION_ID'] = $filter['OPERATION_ID'];
-		}
-		if ($filter['ACCOUNT']) {
-			$grid_filter['%ACCOUNT'] = $filter['ACCOUNT'];
-		}
-
-		if ($filter['CURRENCY']) {
-			$grid_filter['%CURRENCY'] = $filter['CURRENCY'];
-		}
-		if ($filter['PURPOSE']) {
-			$grid_filter['%PURPOSE'] = $filter['PURPOSE'];
-		}
-		if ($filter['PAYER']) {
-			$grid_filter['%PAYER'] = $filter['PAYER'];
-		}
-		if ($filter['CRM_ID']) {
-			$grid_filter['%CRM_ID'] = $filter['CRM_ID'];
+		foreach ($this->data['filterFieldsList'] as $key => $value) {
+			if ($filter[$value['id']] and $filter[$value['id']] != 'operationDate') {
+				$grid_filter['%'.$value['id']] = $filter[$value['id']];
+			}
 		}
 
-		// $search = $filterOption->getSearchString();
-		// if ($search) {
-		// 	$grid_filter[] = array(
-		// 		"LOGIC" => "OR",
-		// 		array("%OPERATION_ID" => $search,),
-		// 		array("%ACCOUNT" => $search,),
-		// 		array(">=AMOUNT" => $search,),
-		// 		array("%ANSWER" => $search,),
-		// 		array("%QUESTION" => $search,),
-		// 		array("%ANSWER" => $search,),
-		// 		array("%QUESTION" => $search,),
-		// 		array("%ANSWER" => $search,),
-		// 	);
-		// }
 		$this->filter = $grid_filter;
 	}
 
@@ -111,9 +135,16 @@ class TinkoffComponent extends CBitrixComponent {
 
 	function operationsList ($arr) {
 		foreach ($arr as $key => $value) {
-			$value['CURRENCY'] = $this->currency_list[$value['CURRENCY']];
-			$value['DATE'] = ConvertTimeStamp($value['DATE']);
+			$value['operationCurrencyDigitalCode'] = $this->currency_list[$value['operationCurrencyDigitalCode']];
+			$value['operationDate'] = ConvertTimeStamp($value['operationDate'], 'FULL');
+			$value['trxnPostDate'] = ConvertTimeStamp($value['trxnPostDate'], 'FULL');
+			$value['authorizationDate'] = ConvertTimeStamp($value['authorizationDate'], 'FULL');
+			$value['drawDate'] = ConvertTimeStamp($value['drawDate'], 'FULL');
+			$value['chargeDate'] = ConvertTimeStamp($value['chargeDate'], 'FULL');
+			$value['docDate'] = ConvertTimeStamp($value['operationDate'], 'FULL');
+			$value['operationDate'] = ConvertTimeStamp($value['docDate'], 'FULL');
 			$value['CRM_ID'] = $this->generateCrmLink($value['CRM_ID']);
+			$value['PDF'] = '<a href="'.CFile::GetFileArray($value['PDF'])['SRC'].'" download>'.$value['PDF'].'</a>';
 			$list[] = [
 				'data' => $value,
 				'actions' => [

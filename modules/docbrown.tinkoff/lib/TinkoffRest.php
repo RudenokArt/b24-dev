@@ -1,6 +1,9 @@
 <?php 
 
 namespace Bitrix\Docbrown;
+use Dompdf\Dompdf;
+use CFile;
+
 
 /**
  * 
@@ -18,6 +21,51 @@ class TinkoffRest {
 		);
 	}
 
+	public static $tinkoffOperationFields = [
+		'operationDate' => 'Дата операции',
+		'operationId' => 'id операции',
+		'accountNumber' => 'Номер счета',
+		'bic' => 'БИК',
+		'typeOfOperation' => 'Тип операции',
+		'category' => 'Категория',
+		'trxnPostDate' => '',
+		'authorizationDate' => 'Дата авторизации',
+		'drawDate' => '',
+		'chargeDate' => 'Дата начисления',
+		'docDate' => 'Дата документа',
+		'payVo' => '',
+		'vo' => '',
+		'operationAmount' => 'Сумма операции',
+		'operationCurrencyDigitalCode' => 'Код валюты операции',
+		'accountAmount' => 'Сумма счета',
+		'accountCurrencyDigitalCode' => 'Код валюты счета',
+		'rubleAmount' => 'Рублевая сумма',
+		'description' => 'Описание',
+		'payPurpose' => 'Назначение платежа',
+		'payer_acct' => 'Счет плательщика',
+		'payer_inn' => 'ИНН плательщика',
+		'payer_kpp' => 'КПП плательщика',
+		'payer_name' => 'Плательщик',
+		'payer_bicRu' => 'БИК плательщика',
+		'payer_corAcct' => 'Корреспондентский счет плательщика',
+		'receiver_acct' => 'Счет получателя',
+		'receiver_inn' => 'ИНН получателя',
+		'receiver_name' => 'Получатель',
+		'receiver_bicRu' => 'БИК получателя',
+		'receiver_corAcct' => 'Корреспондентский счет получателя',
+		'counterParty_account' => 'Счет контрагента',
+		'counterParty_inn' => 'ИНН контрагента',
+		'counterParty_kpp' => 'КПП контрагента',
+		'counterParty_name' => 'Контрагент',
+		'counterParty_bankName' => 'Банк контрагента',
+		'counterParty_bankBic' => 'БИК контрагента',
+		'counterParty_corrAccount' => 'Корреспондентский счет контрагента',
+		'cardNumber' => '№ карты',
+		'ucid' => '',
+		'mcc' => '',
+		'rrn' => '',
+	];
+
 	function statement () {
 		$last_time = self::checkDate();
 		$api = new TinkoffApi($last_time);
@@ -29,10 +77,45 @@ class TinkoffRest {
 						'operationDate' => self::dateToTime($value1['operationDate']),
 						'operationId' => $value1['operationId'],
 						'accountNumber' => $value1['accountNumber'],
+						'bic' => $value1['bic'],
+						'typeOfOperation' =>$value1['typeOfOperation'],
+						'category' => $value1['category'],
+						'trxnPostDate' => self::dateToTime($value1['trxnPostDate']),
+						'authorizationDate' => self::dateToTime($value1['authorizationDate']),
+						'drawDate' => self::dateToTime($value1['drawDate']),
+						'chargeDate' => self::dateToTime($value1['chargeDate']),
+						'docDate' => self::dateToTime($value1['docDate']),
+						'payVo' => $value1['payVo'],
+						'vo' => $value1['vo'],
 						'operationAmount' => $value1['operationAmount'],
 						'operationCurrencyDigitalCode' => $value1['operationCurrencyDigitalCode'],
+						'accountAmount' => $value1['accountAmount'],
+						'accountCurrencyDigitalCode' => $value1['accountCurrencyDigitalCode'],
+						'rubleAmount' => $value1['rubleAmount'],
+						'description' => $value1['description'],
 						'payPurpose' => $value1['payPurpose'],
-						'payer' => $value1['payer']['name'],
+						'payer_acct' => $value1['payer']['acct'],
+						'payer_inn' => $value1['payer']['inn'],
+						'payer_kpp' => $value1['payer']['kpp'],
+						'payer_name' => $value1['payer']['name'],
+						'payer_bicRu' => $value1['payer']['bicRu'],
+						'payer_corAcct' => $value1['payer']['corAcct'],
+						'receiver_acct' => $value1['receiver']['acct'],
+						'receiver_inn' => $value1['receiver']['inn'],
+						'receiver_name' => $value1['receiver']['name'],
+						'receiver_bicRu' => $value1['receiver']['bicRu'],
+						'receiver_corAcct' => $value1['receiver']['corAcct'],
+						'counterParty_account' => $value1['counterParty']['account'],
+						'counterParty_inn' => $value1['counterParty']['inn'],
+						'counterParty_kpp' => $value1['counterParty']['kpp'],
+						'counterParty_name' => $value1['counterParty']['name'],
+						'counterParty_bankName' => $value1['counterParty']['bankName'],
+						'counterParty_bankBic' => $value1['counterParty']['bankBic'],
+						'counterParty_corrAccount' => $value1['counterParty']['corrAccount'],
+						'cardNumber' => $value1['cardNumber'],
+						'ucid' => $value1['ucid'],
+						'mcc' => $value1['mcc'],
+						'rrn' => $value1['rrn'],
 						'crm' => $matches[0][0],
 					];
 				}
@@ -48,7 +131,7 @@ class TinkoffRest {
 		];
 	}
 
-		public static function checkCrmId ($crm) {
+	public static function checkCrmId ($crm) {
 		\Bitrix\Main\Loader::includeModule('crm');
 		$arr = explode('_', $crm);
 		if ($arr[0] == 'LEAD') {
@@ -68,21 +151,63 @@ class TinkoffRest {
 
 	public static function saveData ($operations) {
 		foreach ($operations as $key => $value) {
-			$crm = self::checkCrmId($value['crm']);
-			$add = TinkoffTable::validatedAdd([
-				'DATE'=> $value['operationDate'],
-				'OPERATION_ID'=> $value['operationId'],
-				'ACCOUNT'=> $value['accountNumber'],
-				'AMOUNT'=> $value['operationAmount'],
-				'CURRENCY'=> $value['operationCurrencyDigitalCode'],
-				'PURPOSE'=> $value['payPurpose'],
-				'PAYER'=> $value['payer'],
-				'CRM_ID'=> $crm,
-			]);
-			$arr[] = $add;
+			$pdf_id = self::pdfGenerator($value);
 			\Bitrix\Docbrown\TinkoffTable::setPaymentProps($value['crm']);
+			$value['CRM_ID'] = self::checkCrmId($value['crm']);
+			$value['PDF'] = $pdf_id;
+			unset($value['crm']);
+			$add = TinkoffTable::validatedAdd($value);
+			$arr[] = $add;
 		}
 		return $arr;
+	}
+
+	public static function pdfGenerator ($arr) {
+		$payment = new Dompdf();
+		$html = self::htmlGenerator($arr);
+		$payment->loadHtml($html);
+		$payment->render();
+		$tmp_path = $_SERVER['DOCUMENT_ROOT'].'/upload/tmp/invoice.pdf';
+		file_put_contents($tmp_path, $payment->output());
+		$file_arr =  CFile::MakeFileArray($tmp_path);
+		$file_id = CFile::SaveFile(
+			array_merge($file_arr, ['del' => 'N', 'MODULE_ID' => 'main', ]),
+			'tmp'
+		);
+		return $file_id;
+	}
+
+	public static function htmlGenerator ($arr) {
+		$html = '<style>
+		.statement-row {
+			font-size: 10px;
+		}
+		.statement-row td {
+			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		}
+		.statement-container {
+			padding: 10px;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			margin: auto;
+			width: 100%;
+			font-family: Arial;
+		}
+		</style>';
+		$html = $html.'<table class="statement-container">';
+		$html = $html.'<tr><td colspan="2"><img src="'.__DIR__.'/img/tink-logo.jpg" width="250"></td></tr>';
+		foreach ($arr as $key => $value) {
+			if ($key != 'crm') {
+				$html = $html.'<tr class="statement-row">';
+				if (self::$tinkoffOperationFields[$key]) {
+					$html = $html.'<td><b>'.self::$tinkoffOperationFields[$key].'</b></td><td>'. $value;
+				} else {
+					$html = $html.'<td><b>'.$key.'</b></td><td>'. $value;
+				}
+				$html = $html . '</tr>';
+			}
+		}
+		$html = $html . '</table>';
+		return $html;
 	}
 
 	function dateToTime ($str) {
@@ -95,7 +220,7 @@ class TinkoffRest {
 			'order' => ['ID' => 'DESC'],
 		])->fetch();
 		if ($operation) {
-			$last_time = $operation['DATE'];
+			$last_time = $operation['operationDate'];
 		} else {
 			$last_time = strtotime('2023-06-01');
 		}
@@ -106,4 +231,3 @@ class TinkoffRest {
 }
 
 
-?>

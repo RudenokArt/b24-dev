@@ -15,6 +15,8 @@ if ($_GET['update']) {
 	])->fetch();
 } else {
 	$this->init($arResult['currency_list']);
+	$arResult['gridFieldsList'] = $this->data['gridFieldsList'];
+	$arResult['filterFieldsList'] = $this->data['filterFieldsList'];
 	$arResult['total'] = $this->total;
 	$arResult['nav'] = $this->nav;
 	$arResult['operationsList'] = $this->data['operationsList'];

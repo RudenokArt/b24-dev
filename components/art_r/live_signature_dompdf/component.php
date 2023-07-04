@@ -7,7 +7,7 @@ $arResult->init(
 	$_SERVER['SERVER_NAME'].$this->getPath().'/invoice.docx',
 	$_SERVER['SERVER_NAME'].$this->getPath().'/invoice.pdf',
 	$_SERVER['DOCUMENT_ROOT'].$this->getPath().'/invoice.docx',
-	$_SERVER['DOCUMENT_ROOT'].$this->getPath().'/invoice.pdf',
+	$_SERVER['DOCUMENT_ROOT'].$this->getPath().'/invoice.pdf'
 );
 
 

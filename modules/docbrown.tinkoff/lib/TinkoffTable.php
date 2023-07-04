@@ -1,11 +1,12 @@
 <?php
+
 namespace Bitrix\Docbrown;
 
 use Bitrix\Main\Localization\Loc,
-Bitrix\Main\ORM\Data\DataManager,
-Bitrix\Main\ORM\Fields\IntegerField,
-Bitrix\Main\ORM\Fields\StringField,
-Bitrix\Main\ORM\Fields\Validators\LengthValidator;
+	Bitrix\Main\ORM\Data\DataManager,
+	Bitrix\Main\ORM\Fields\IntegerField,
+	Bitrix\Main\ORM\Fields\StringField,
+	Bitrix\Main\ORM\Fields\Validators\LengthValidator;
 
 Loc::loadMessages(__FILE__);
 
@@ -15,14 +16,50 @@ Loc::loadMessages(__FILE__);
  * Fields:
  * <ul>
  * <li> ID int mandatory
- * <li> DATE int mandatory
- * <li> OPERATION_ID string(55) mandatory
- * <li> ACCOUNT string(55) mandatory
- * <li> AMOUNT int mandatory
- * <li> CURRENCY string(3) mandatory
- * <li> PURPOSE string(255) mandatory
- * <li> PAYER string(255) mandatory
- * <li> CRM_ID string(22) optional
+ * <li> operationDate int mandatory
+ * <li> operationId string(255) mandatory
+ * <li> accountNumber string(255) mandatory
+ * <li> bic string(16) optional
+ * <li> typeOfOperation string(255) mandatory
+ * <li> category string(255) optional
+ * <li> trxnPostDate string(16) optional
+ * <li> authorizationDate int optional
+ * <li> drawDate int optional
+ * <li> chargeDate int optional
+ * <li> docDate int optional
+ * <li> payVo string(255) optional
+ * <li> vo string(255) optional
+ * <li> operationAmount int optional
+ * <li> operationCurrencyDigitalCode string(8) optional
+ * <li> accountAmount int optional
+ * <li> accountCurrencyDigitalCode string(8) optional
+ * <li> rubleAmount int optional
+ * <li> description string(255) optional
+ * <li> payPurpose string(255) optional
+ * <li> payer_acct string(32) optional
+ * <li> payer_inn string(32) optional
+ * <li> payer_kpp string(32) optional
+ * <li> payer_name string(255) optional
+ * <li> payer_bicRu string(16) optional
+ * <li> payer_corAcct string(32) optional
+ * <li> receiver_acct string(32) optional
+ * <li> receiver_inn string(32) optional
+ * <li> receiver_name string(255) optional
+ * <li> receiver_bicRu string(32) optional
+ * <li> receiver_corAcct string(32) optional
+ * <li> counterParty_account string(32) optional
+ * <li> counterParty_inn string(32) optional
+ * <li> counterParty_kpp string(32) optional
+ * <li> counterParty_name string(255) optional
+ * <li> counterParty_bankName string(255) optional
+ * <li> counterParty_bankBic string(32) optional
+ * <li> counterParty_corrAccount string(32) optional
+ * <li> cardNumber string(32) optional
+ * <li> ucid int optional
+ * <li> mcc string(8) optional
+ * <li> rrn string(16) optional
+ * <li> CRM_ID string(255) optional
+ * <li> PDF int optional
  * </ul>
  *
  * @package Bitrix\Docbrown
@@ -57,57 +94,292 @@ class TinkoffTable extends DataManager
 				]
 			),
 			new IntegerField(
-				'DATE',
+				'operationDate',
 				[
 					'required' => true,
-					'title' => Loc::getMessage('TINKOFF_ENTITY_DATE_FIELD')
+					'title' => Loc::getMessage('TINKOFF_ENTITY_OPERATIONDATE_FIELD')
 				]
 			),
 			new StringField(
-				'OPERATION_ID',
+				'operationId',
 				[
 					'required' => true,
-					'validation' => [__CLASS__, 'validateOperationId'],
-					'title' => Loc::getMessage('TINKOFF_ENTITY_OPERATION_ID_FIELD')
+					'validation' => [__CLASS__, 'validateOperationid'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_OPERATIONID_FIELD')
 				]
 			),
 			new StringField(
-				'ACCOUNT',
+				'accountNumber',
 				[
 					'required' => true,
-					'validation' => [__CLASS__, 'validateAccount'],
-					'title' => Loc::getMessage('TINKOFF_ENTITY_ACCOUNT_FIELD')
+					'validation' => [__CLASS__, 'validateAccountnumber'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_ACCOUNTNUMBER_FIELD')
+				]
+			),
+			new StringField(
+				'bic',
+				[
+					'validation' => [__CLASS__, 'validateBic'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_BIC_FIELD')
+				]
+			),
+			new StringField(
+				'typeOfOperation',
+				[
+					'required' => true,
+					'validation' => [__CLASS__, 'validateTypeofoperation'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_TYPEOFOPERATION_FIELD')
+				]
+			),
+			new StringField(
+				'category',
+				[
+					'validation' => [__CLASS__, 'validateCategory'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_CATEGORY_FIELD')
+				]
+			),
+			new StringField(
+				'trxnPostDate',
+				[
+					'validation' => [__CLASS__, 'validateTrxnpostdate'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_TRXNPOSTDATE_FIELD')
 				]
 			),
 			new IntegerField(
-				'AMOUNT',
+				'authorizationDate',
 				[
-					'required' => true,
-					'title' => Loc::getMessage('TINKOFF_ENTITY_AMOUNT_FIELD')
+					'title' => Loc::getMessage('TINKOFF_ENTITY_AUTHORIZATIONDATE_FIELD')
+				]
+			),
+			new IntegerField(
+				'drawDate',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_DRAWDATE_FIELD')
+				]
+			),
+			new IntegerField(
+				'chargeDate',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_CHARGEDATE_FIELD')
+				]
+			),
+			new IntegerField(
+				'docDate',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_DOCDATE_FIELD')
 				]
 			),
 			new StringField(
-				'CURRENCY',
+				'payVo',
 				[
-					'required' => true,
-					'validation' => [__CLASS__, 'validateCurrency'],
-					'title' => Loc::getMessage('TINKOFF_ENTITY_CURRENCY_FIELD')
+					'validation' => [__CLASS__, 'validatePayvo'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYVO_FIELD')
 				]
 			),
 			new StringField(
-				'PURPOSE',
+				'vo',
 				[
-					'required' => true,
-					'validation' => [__CLASS__, 'validatePurpose'],
-					'title' => Loc::getMessage('TINKOFF_ENTITY_PURPOSE_FIELD')
+					'validation' => [__CLASS__, 'validateVo'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_VO_FIELD')
+				]
+			),
+			new IntegerField(
+				'operationAmount',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_OPERATIONAMOUNT_FIELD')
 				]
 			),
 			new StringField(
-				'PAYER',
+				'operationCurrencyDigitalCode',
 				[
-					'required' => true,
-					'validation' => [__CLASS__, 'validatePayer'],
-					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYER_FIELD')
+					'validation' => [__CLASS__, 'validateOperationcurrencydigitalcode'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_OPERATIONCURRENCYDIGITALCODE_FIELD')
+				]
+			),
+			new IntegerField(
+				'accountAmount',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_ACCOUNTAMOUNT_FIELD')
+				]
+			),
+			new StringField(
+				'accountCurrencyDigitalCode',
+				[
+					'validation' => [__CLASS__, 'validateAccountcurrencydigitalcode'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_ACCOUNTCURRENCYDIGITALCODE_FIELD')
+				]
+			),
+			new IntegerField(
+				'rubleAmount',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_RUBLEAMOUNT_FIELD')
+				]
+			),
+			new StringField(
+				'description',
+				[
+					'validation' => [__CLASS__, 'validateDescription'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_DESCRIPTION_FIELD')
+				]
+			),
+			new StringField(
+				'payPurpose',
+				[
+					'validation' => [__CLASS__, 'validatePaypurpose'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYPURPOSE_FIELD')
+				]
+			),
+			new StringField(
+				'payer_acct',
+				[
+					'validation' => [__CLASS__, 'validatePayerAcct'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYER_ACCT_FIELD')
+				]
+			),
+			new StringField(
+				'payer_inn',
+				[
+					'validation' => [__CLASS__, 'validatePayerInn'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYER_INN_FIELD')
+				]
+			),
+			new StringField(
+				'payer_kpp',
+				[
+					'validation' => [__CLASS__, 'validatePayerKpp'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYER_KPP_FIELD')
+				]
+			),
+			new StringField(
+				'payer_name',
+				[
+					'validation' => [__CLASS__, 'validatePayerName'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYER_NAME_FIELD')
+				]
+			),
+			new StringField(
+				'payer_bicRu',
+				[
+					'validation' => [__CLASS__, 'validatePayerBicru'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYER_BICRU_FIELD')
+				]
+			),
+			new StringField(
+				'payer_corAcct',
+				[
+					'validation' => [__CLASS__, 'validatePayerCoracct'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PAYER_CORACCT_FIELD')
+				]
+			),
+			new StringField(
+				'receiver_acct',
+				[
+					'validation' => [__CLASS__, 'validateReceiverAcct'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_RECEIVER_ACCT_FIELD')
+				]
+			),
+			new StringField(
+				'receiver_inn',
+				[
+					'validation' => [__CLASS__, 'validateReceiverInn'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_RECEIVER_INN_FIELD')
+				]
+			),
+			new StringField(
+				'receiver_name',
+				[
+					'validation' => [__CLASS__, 'validateReceiverName'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_RECEIVER_NAME_FIELD')
+				]
+			),
+			new StringField(
+				'receiver_bicRu',
+				[
+					'validation' => [__CLASS__, 'validateReceiverBicru'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_RECEIVER_BICRU_FIELD')
+				]
+			),
+			new StringField(
+				'receiver_corAcct',
+				[
+					'validation' => [__CLASS__, 'validateReceiverCoracct'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_RECEIVER_CORACCT_FIELD')
+				]
+			),
+			new StringField(
+				'counterParty_account',
+				[
+					'validation' => [__CLASS__, 'validateCounterpartyAccount'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_COUNTERPARTY_ACCOUNT_FIELD')
+				]
+			),
+			new StringField(
+				'counterParty_inn',
+				[
+					'validation' => [__CLASS__, 'validateCounterpartyInn'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_COUNTERPARTY_INN_FIELD')
+				]
+			),
+			new StringField(
+				'counterParty_kpp',
+				[
+					'validation' => [__CLASS__, 'validateCounterpartyKpp'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_COUNTERPARTY_KPP_FIELD')
+				]
+			),
+			new StringField(
+				'counterParty_name',
+				[
+					'validation' => [__CLASS__, 'validateCounterpartyName'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_COUNTERPARTY_NAME_FIELD')
+				]
+			),
+			new StringField(
+				'counterParty_bankName',
+				[
+					'validation' => [__CLASS__, 'validateCounterpartyBankname'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_COUNTERPARTY_BANKNAME_FIELD')
+				]
+			),
+			new StringField(
+				'counterParty_bankBic',
+				[
+					'validation' => [__CLASS__, 'validateCounterpartyBankbic'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_COUNTERPARTY_BANKBIC_FIELD')
+				]
+			),
+			new StringField(
+				'counterParty_corrAccount',
+				[
+					'validation' => [__CLASS__, 'validateCounterpartyCorraccount'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_COUNTERPARTY_CORRACCOUNT_FIELD')
+				]
+			),
+			new StringField(
+				'cardNumber',
+				[
+					'validation' => [__CLASS__, 'validateCardnumber'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_CARDNUMBER_FIELD')
+				]
+			),
+			new IntegerField(
+				'ucid',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_UCID_FIELD')
+				]
+			),
+			new StringField(
+				'mcc',
+				[
+					'validation' => [__CLASS__, 'validateMcc'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_MCC_FIELD')
+				]
+			),
+			new StringField(
+				'rrn',
+				[
+					'validation' => [__CLASS__, 'validateRrn'],
+					'title' => Loc::getMessage('TINKOFF_ENTITY_RRN_FIELD')
 				]
 			),
 			new StringField(
@@ -117,51 +389,21 @@ class TinkoffTable extends DataManager
 					'title' => Loc::getMessage('TINKOFF_ENTITY_CRM_ID_FIELD')
 				]
 			),
+			new IntegerField(
+				'PDF',
+				[
+					'title' => Loc::getMessage('TINKOFF_ENTITY_PDF_FIELD')
+				]
+			),
 		];
 	}
 
 	/**
-	 * Returns validators for OPERATION_ID field.
+	 * Returns validators for operationId field.
 	 *
 	 * @return array
 	 */
-	public static function validateOperationId()
-	{
-		return [
-			new LengthValidator(null, 55),
-		];
-	}
-
-	/**
-	 * Returns validators for ACCOUNT field.
-	 *
-	 * @return array
-	 */
-	public static function validateAccount()
-	{
-		return [
-			new LengthValidator(null, 55),
-		];
-	}
-
-	/**
-	 * Returns validators for CURRENCY field.
-	 *
-	 * @return array
-	 */
-	public static function validateCurrency()
-	{
-		return [
-			new LengthValidator(null, 3),
-		];
-	}
-
-	/**
-	 * Returns validators for PURPOSE field.
-	 *
-	 * @return array
-	 */
-	public static function validatePurpose()
+	public static function validateOperationid()
 	{
 		return [
 			new LengthValidator(null, 255),
@@ -169,14 +411,386 @@ class TinkoffTable extends DataManager
 	}
 
 	/**
-	 * Returns validators for PAYER field.
+	 * Returns validators for accountNumber field.
 	 *
 	 * @return array
 	 */
-	public static function validatePayer()
+	public static function validateAccountnumber()
 	{
 		return [
 			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for bic field.
+	 *
+	 * @return array
+	 */
+	public static function validateBic()
+	{
+		return [
+			new LengthValidator(null, 16),
+		];
+	}
+
+	/**
+	 * Returns validators for typeOfOperation field.
+	 *
+	 * @return array
+	 */
+	public static function validateTypeofoperation()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for category field.
+	 *
+	 * @return array
+	 */
+	public static function validateCategory()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for trxnPostDate field.
+	 *
+	 * @return array
+	 */
+	public static function validateTrxnpostdate()
+	{
+		return [
+			new LengthValidator(null, 16),
+		];
+	}
+
+	/**
+	 * Returns validators for payVo field.
+	 *
+	 * @return array
+	 */
+	public static function validatePayvo()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for vo field.
+	 *
+	 * @return array
+	 */
+	public static function validateVo()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for operationCurrencyDigitalCode field.
+	 *
+	 * @return array
+	 */
+	public static function validateOperationcurrencydigitalcode()
+	{
+		return [
+			new LengthValidator(null, 8),
+		];
+	}
+
+	/**
+	 * Returns validators for accountCurrencyDigitalCode field.
+	 *
+	 * @return array
+	 */
+	public static function validateAccountcurrencydigitalcode()
+	{
+		return [
+			new LengthValidator(null, 8),
+		];
+	}
+
+	/**
+	 * Returns validators for description field.
+	 *
+	 * @return array
+	 */
+	public static function validateDescription()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for payPurpose field.
+	 *
+	 * @return array
+	 */
+	public static function validatePaypurpose()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for payer_acct field.
+	 *
+	 * @return array
+	 */
+	public static function validatePayerAcct()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for payer_inn field.
+	 *
+	 * @return array
+	 */
+	public static function validatePayerInn()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for payer_kpp field.
+	 *
+	 * @return array
+	 */
+	public static function validatePayerKpp()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for payer_name field.
+	 *
+	 * @return array
+	 */
+	public static function validatePayerName()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for payer_bicRu field.
+	 *
+	 * @return array
+	 */
+	public static function validatePayerBicru()
+	{
+		return [
+			new LengthValidator(null, 16),
+		];
+	}
+
+	/**
+	 * Returns validators for payer_corAcct field.
+	 *
+	 * @return array
+	 */
+	public static function validatePayerCoracct()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for receiver_acct field.
+	 *
+	 * @return array
+	 */
+	public static function validateReceiverAcct()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for receiver_inn field.
+	 *
+	 * @return array
+	 */
+	public static function validateReceiverInn()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for receiver_name field.
+	 *
+	 * @return array
+	 */
+	public static function validateReceiverName()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for receiver_bicRu field.
+	 *
+	 * @return array
+	 */
+	public static function validateReceiverBicru()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for receiver_corAcct field.
+	 *
+	 * @return array
+	 */
+	public static function validateReceiverCoracct()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for counterParty_account field.
+	 *
+	 * @return array
+	 */
+	public static function validateCounterpartyAccount()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for counterParty_inn field.
+	 *
+	 * @return array
+	 */
+	public static function validateCounterpartyInn()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for counterParty_kpp field.
+	 *
+	 * @return array
+	 */
+	public static function validateCounterpartyKpp()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for counterParty_name field.
+	 *
+	 * @return array
+	 */
+	public static function validateCounterpartyName()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for counterParty_bankName field.
+	 *
+	 * @return array
+	 */
+	public static function validateCounterpartyBankname()
+	{
+		return [
+			new LengthValidator(null, 255),
+		];
+	}
+
+	/**
+	 * Returns validators for counterParty_bankBic field.
+	 *
+	 * @return array
+	 */
+	public static function validateCounterpartyBankbic()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for counterParty_corrAccount field.
+	 *
+	 * @return array
+	 */
+	public static function validateCounterpartyCorraccount()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for cardNumber field.
+	 *
+	 * @return array
+	 */
+	public static function validateCardnumber()
+	{
+		return [
+			new LengthValidator(null, 32),
+		];
+	}
+
+	/**
+	 * Returns validators for mcc field.
+	 *
+	 * @return array
+	 */
+	public static function validateMcc()
+	{
+		return [
+			new LengthValidator(null, 8),
+		];
+	}
+
+	/**
+	 * Returns validators for rrn field.
+	 *
+	 * @return array
+	 */
+	public static function validateRrn()
+	{
+		return [
+			new LengthValidator(null, 16),
 		];
 	}
 
@@ -188,7 +802,7 @@ class TinkoffTable extends DataManager
 	public static function validateCrmId()
 	{
 		return [
-			new LengthValidator(null, 22),
+			new LengthValidator(null, 255),
 		];
 	}
 

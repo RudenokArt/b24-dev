@@ -1,27 +1,28 @@
 <?php
 \Bitrix\Main\UI\Extension::load("ui.buttons.icons");
 \Bitrix\Main\UI\Extension::load("ui.buttons"); 
+\Bitrix\Main\UI\Extension::load("ui.bootstrap4");
 ?>
 <div class="container">
 	<div class="row border-bottom">
 		<div class="col-4"><?php echo GetMessage('DATE');?>:</div>
-		<div class="col-8 h6"><?php echo ConvertTimeStamp($arResult['operation']['DATE']) ?></div>
+		<div class="col-8 h6"><?php echo ConvertTimeStamp($arResult['operation']['operationDate']) ?></div>
 	</div>
 	<div class="row border-bottom">
 		<div class="col-4"><?php echo GetMessage('ACCOUNT');?>:</div>
-		<div class="col-8 h6"><?php echo $arResult['operation']['ACCOUNT'] ?></div>
+		<div class="col-8 h6"><?php echo $arResult['operation']['accountNumber'] ?></div>
 	</div>
 	<div class="row border-bottom">
 		<div class="col-4"><?php echo GetMessage('AMOUNT');?>:</div>
-		<div class="col-8 h6"><?php echo $arResult['operation']['AMOUNT'] ?></div>
+		<div class="col-8 h6"><?php echo $arResult['operation']['operationAmount'] ?></div>
 	</div>
 	<div class="row border-bottom">
 		<div class="col-4"><?php echo GetMessage('CURRENCY');?>:</div>
-		<div class="col-8 h6"><?php echo $arResult['currency_list'][$arResult['operation']['CURRENCY']]; ?></div>
+		<div class="col-8 h6"><?php echo $arResult['currency_list'][$arResult['operation']['operationCurrencyDigitalCode']]; ?></div>
 	</div>
 	<div class="row border-bottom">
 		<div class="col-4"><?php echo GetMessage('PAYER');?>:</div>
-		<div class="col-8 h6"><?php echo $arResult['operation']['PAYER'] ?></div>
+		<div class="col-8 h6"><?php echo $arResult['operation']['payer_name'] ?></div>
 	</div>
 	<div class="row pt-5">
 		<div class="col-12 border p-1">

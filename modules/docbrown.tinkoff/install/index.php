@@ -29,7 +29,17 @@ class docbrown_tinkoff extends CModule
 		RegisterModuleDependences('rest', 'OnRestServiceBuildDescription', 
 			$this->MODULE_ID, 'Bitrix\Docbrown\TinkoffRest', 'OnRestServiceBuildDescription');
 
-		$this->InstallFiles();
+		// $this->InstallFiles();
+
+		symlink(
+			__DIR__.'/tinkoff',
+			$_SERVER['DOCUMENT_ROOT'].'/tinkoff'
+		);
+
+		symlink(
+			__DIR__.'/components/docbrown/tinkoff/',
+			$_SERVER['DOCUMENT_ROOT'].'/local/components/docbrown/tinkoff'
+		);
 
 		RegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Installing the module', __DIR__ . '/step.php');
@@ -37,12 +47,22 @@ class docbrown_tinkoff extends CModule
 
 	function DoUninstall() {
 
+		unlink(
+			__DIR__.'/tinkoff',
+			$_SERVER['DOCUMENT_ROOT'].'/tinkoff'
+		);
+
+		unlink(
+			__DIR__.'/components/docbrown/tinkoff/',
+			$_SERVER['DOCUMENT_ROOT'].'/local/components/docbrown/tinkoff'
+		);
+
 		$GLOBALS['DB']->RunSqlBatch(__DIR__.'/db/uninstall.sql');
 
 		UnRegisterModuleDependences('rest', 'OnRestServiceBuildDescription', 
 			$this->MODULE_ID, 'Bitrix\Docbrown\TinkoffRest', 'OnRestServiceBuildDescription');
 
-		$this->unInstallFiles();
+		// $this->unInstallFiles();
 
 		UnRegisterModule($this->MODULE_ID);
 		$GLOBALS['APPLICATION']->IncludeAdminFile('Uninstalling the module', __DIR__ . '/unstep.php');
