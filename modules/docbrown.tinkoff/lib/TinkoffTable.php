@@ -3,10 +3,11 @@
 namespace Bitrix\Docbrown;
 
 use Bitrix\Main\Localization\Loc,
-	Bitrix\Main\ORM\Data\DataManager,
-	Bitrix\Main\ORM\Fields\IntegerField,
-	Bitrix\Main\ORM\Fields\StringField,
-	Bitrix\Main\ORM\Fields\Validators\LengthValidator;
+Bitrix\Main\ORM\Data\DataManager,
+Bitrix\Main\ORM\Fields\IntegerField,
+Bitrix\Main\ORM\Fields\StringField,
+Bitrix\Main\ORM\Fields\Validators\LengthValidator;
+use CFile;
 
 Loc::loadMessages(__FILE__);
 
@@ -806,18 +807,102 @@ class TinkoffTable extends DataManager
 		];
 	}
 
-	public static $paymentPropsArr = [
-		'UF_CRM_63D8DD8E5F437' => true,
-		'UF_CRM_1673890981675' => true,
-	];
 
-	public static function setPaymentProps ($crm) {
+	// ===================== Additional Methods ==========================
+
+	// LEAD 
+	// UF_CRM_1597332172 - признак оплаты
+	// UF_CRM_1597239870 - сумма оплаты 
+	// UF_CRM_1597240005": "2823" - метод оплаты	
+
+	// DEAL
+	// UF_CRM_5F363984556FC - признак оплаты 
+	// UF_CRM_1573037237058 - сумма оплаты
+	// UF_CRM_62E14200A426C - Квитанция об оплате
+	// UF_CRM_1595578581164": "2826" - метод оплаты
+
+	static function DealPaymentAction ($filterAndSelectArr) {
+		$crm = \Bitrix\Crm\DealTable::getList($filterAndSelectArr)->fetch();
+		$amount = self::crmPaymentParser($crm['UF_CRM_1573037237058']);
+		if ($amount['sum'] > 0) {
+			\Bitrix\Crm\DealTable::update($crm['ID'], ['UF_CRM_5F363984556FC' => true,]);
+		} else {
+			\Bitrix\Crm\DealTable::update($crm['ID'], ['UF_CRM_5F363984556FC' => false,]);
+		}
+		return $crm;
+	}
+
+	static function LeadPaymentAction ($filterAndSelectArr) {
+		$crm = \Bitrix\Crm\LeadTable::getList($filterAndSelectArr)->fetch();
+		$amount = self::crmPaymentParser($crm['UF_CRM_1597239870']);
+		if ($amount['sum'] > 0) {
+			\Bitrix\Crm\LeadTable::update($crm['ID'], ['UF_CRM_1597332172' => true,]);
+		} else {
+			\Bitrix\Crm\LeadTable::update($crm['ID'], ['UF_CRM_1597332172' => false,]);
+		}
+		return $crm;
+	}
+
+	static function debugLog ($arr) {
+		file_put_contents($_SERVER['DOCUMENT_ROOT'].'/local/modules/docbrown.tinkoff/log.json', json_encode($arr));
+	}
+
+	static function crmPaymentParser ($str) {
+		$arr = explode('|', $str);
+		return [
+			'sum' => (int) $arr[0],
+			'cur' => $arr[1],
+		];
+	}
+
+	static function DealPaymentMethod ($tinkoff, $crm) {
+		$tinkoff = self::getList(['filter' => ['ID' => $tinkoff['ID']]])->fetch();
+		if ($tinkoff['CRM_ID']) {
+			$update = \Bitrix\Crm\DealTable::update($crm['ID'], ['UF_CRM_1595578581164' => 2826,]);
+			return true;
+		}
+		return false;
+	}
+
+	static function LeadPaymentMethod ($tinkoff, $crm) {
+		$tinkoff = self::getList(['filter' => ['ID' => $tinkoff['ID']]])->fetch();
+		if ($tinkoff['CRM_ID']) {
+			$update = \Bitrix\Crm\LeadTable::update($crm['ID'], ['UF_CRM_1597240005' => 2823,]);
+			return true;
+		}
+		return false;
+	}
+
+	static function DealPaymentBindFile ($tinkoff, $crm, $filterAndSelectArr) {
+		\Bitrix\Main\Loader::includeModule('main');
+		$arFile = CFile::MakeFileArray($tinkoff['PDF']);
+		$crm['UF_CRM_62E14200A426C'][] = $arFile;
+		\Bitrix\Crm\DealTable::update($crm['ID'], ['UF_CRM_62E14200A426C' => $crm['UF_CRM_62E14200A426C']]);
+		$crm = \Bitrix\Crm\DealTable::getList($filterAndSelectArr)->fetch();
+		self::update($tinkoff['ID'], ['PDF' => array_pop($crm['UF_CRM_62E14200A426C'])]);
+		self::debugLog(array_pop($crm['UF_CRM_62E14200A426C']));
+	}
+
+	public static function setPaymentProps ($tinkoff) {
+		$crm_id = $tinkoff['CRM_ID'];
+		if (!$crm_id) {
+			return 'empty';
+		}
 		\Bitrix\Main\Loader::includeModule('crm');
-		$arr = explode('_', $crm);
+		$arr = explode('_', $crm_id);
+		$filterAndSelectArr = [
+			'filter' => ['ID' => $arr[1]],
+			'select' => ['*', 'UF_*'],
+		];
 		if ($arr[0] == 'LEAD') {
-			\Bitrix\Crm\LeadTable::update($arr[1], self::$paymentPropsArr);		
+			$crm = self::LeadPaymentAction($filterAndSelectArr);
+			$file = self::LeadPaymentMethod($tinkoff, $crm);
 		} elseif ($arr[0] == 'DEAL') {
-			\Bitrix\Crm\DealTable::update($arr[1], self::$paymentPropsArr);
+			$crm = self::DealPaymentAction($filterAndSelectArr);
+			$file = self::DealPaymentMethod($tinkoff, $crm);
+			if ($file) {
+				self::DealPaymentBindFile($tinkoff, $crm, $filterAndSelectArr);
+			}
 		}
 		return $arr;
 	}

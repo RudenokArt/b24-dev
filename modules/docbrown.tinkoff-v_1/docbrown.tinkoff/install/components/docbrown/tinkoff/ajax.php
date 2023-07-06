@@ -15,7 +15,7 @@ class TinkoffCrmdController extends Controller {
 				'CRM_ID' => '',
 			]);
 		}
-		return \Bitrix\Docbrown\TinkoffTable::setPaymentProps($item);
+		return $item;
 	}
 
 	public static function linkCrmAction($crm, $item) {
@@ -32,11 +32,8 @@ class TinkoffCrmdController extends Controller {
 			$update = \Bitrix\Docbrown\TinkoffTable::update($tinkoff['ID'], [
 				'CRM_ID' => $e_type.$arr[1],
 			]);
+			return \Bitrix\Docbrown\TinkoffTable::setPaymentProps($e_type.$arr[1]);
 		}
-		$tinkoff = \Bitrix\Docbrown\TinkoffTable::getList([
-			'filter' => ['ID' => $item,],
-		])->fetch();
-		return \Bitrix\Docbrown\TinkoffTable::setPaymentProps($tinkoff);
 	}
 }
 ?>

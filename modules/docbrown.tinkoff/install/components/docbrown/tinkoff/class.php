@@ -141,8 +141,7 @@ class TinkoffComponent extends CBitrixComponent {
 			$value['authorizationDate'] = ConvertTimeStamp($value['authorizationDate'], 'FULL');
 			$value['drawDate'] = ConvertTimeStamp($value['drawDate'], 'FULL');
 			$value['chargeDate'] = ConvertTimeStamp($value['chargeDate'], 'FULL');
-			$value['docDate'] = ConvertTimeStamp($value['operationDate'], 'FULL');
-			$value['operationDate'] = ConvertTimeStamp($value['docDate'], 'FULL');
+			$value['docDate'] = ConvertTimeStamp($value['docDate'], 'FULL');
 			$value['CRM_ID'] = $this->generateCrmLink($value['CRM_ID']);
 			$value['PDF'] = '<a href="'.CFile::GetFileArray($value['PDF'])['SRC'].'" download>'.$value['PDF'].'</a>';
 			$list[] = [
