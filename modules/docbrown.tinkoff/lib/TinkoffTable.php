@@ -8,6 +8,8 @@ Bitrix\Main\ORM\Fields\IntegerField,
 Bitrix\Main\ORM\Fields\StringField,
 Bitrix\Main\ORM\Fields\Validators\LengthValidator;
 use CFile;
+use CCurrency;
+use CCurrencyRates;
 
 Loc::loadMessages(__FILE__);
 
@@ -813,6 +815,7 @@ class TinkoffTable extends DataManager
 	// LEAD 
 	// UF_CRM_1597332172 - признак оплаты
 	// UF_CRM_1597239870 - сумма оплаты 
+	// UF_CRM_1632310355719 - квитанция об оплате
 	// UF_CRM_1597240005": "2823" - метод оплаты	
 
 	// DEAL
@@ -849,8 +852,14 @@ class TinkoffTable extends DataManager
 
 	static function crmPaymentParser ($str) {
 		$arr = explode('|', $str);
+		if (!$arr[0]) {
+			return [
+				'sum' => 0,
+				'cur' => 'EUR',
+			];;
+		}
 		return [
-			'sum' => (int) $arr[0],
+			'sum' => (float) $arr[0],
 			'cur' => $arr[1],
 		];
 	}
@@ -874,13 +883,105 @@ class TinkoffTable extends DataManager
 	}
 
 	static function DealPaymentBindFile ($tinkoff, $crm, $filterAndSelectArr) {
-		\Bitrix\Main\Loader::includeModule('main');
+		$field = 'UF_CRM_62E14200A426C';
 		$arFile = CFile::MakeFileArray($tinkoff['PDF']);
-		$crm['UF_CRM_62E14200A426C'][] = $arFile;
-		\Bitrix\Crm\DealTable::update($crm['ID'], ['UF_CRM_62E14200A426C' => $crm['UF_CRM_62E14200A426C']]);
+		$crm[$field][] = $arFile;
+		\Bitrix\Crm\DealTable::update($crm['ID'], [$field => $crm[$field]]);
 		$crm = \Bitrix\Crm\DealTable::getList($filterAndSelectArr)->fetch();
-		self::update($tinkoff['ID'], ['PDF' => array_pop($crm['UF_CRM_62E14200A426C'])]);
-		self::debugLog(array_pop($crm['UF_CRM_62E14200A426C']));
+	}
+
+	static function DealPaymentUnBindFile ($tinkoff, $crm, $filterAndSelectArr) {
+		$field = 'UF_CRM_62E14200A426C';
+		$tinkoff_file = CFile::GetFileArray($tinkoff['PDF']);
+		$arFile = \Bitrix\Main\FileTable::getList([
+			'filter' => ['EXTERNAL_ID' => $tinkoff_file['EXTERNAL_ID']],
+			'select' => ['ID'],
+		])->fetchAll();
+		
+		
+		foreach ($arFile as $key => $value) {
+			$key = array_search($value['ID'], $crm[$field]);
+			if ($key !== false) {
+				unset($crm[$field][$key]);
+			}
+		}
+
+		// if (!$crm[$field]) {
+		// 	$crm[$field] = [];
+		// }
+		self::debugLog($crm[$field]);
+		\Bitrix\Crm\DealTable::update($crm['ID'], [$field => $crm[$field]]);
+	}
+
+	static function LeadPaymentBindFile ($tinkoff, $crm, $filterAndSelectArr) {
+		$field = 'UF_CRM_1632310355719';
+		$arFile = CFile::MakeFileArray($tinkoff['PDF']);
+		$crm[$field][] = $arFile;
+		\Bitrix\Crm\LeadTable::update($crm['ID'], [$field => $crm[$field]]);
+		$crm = \Bitrix\Crm\LeadTable::getList($filterAndSelectArr)->fetch();
+	}
+
+	static function LeadPaymentUnBindFile ($tinkoff, $crm, $filterAndSelectArr) {
+		$field = 'UF_CRM_1632310355719';
+		$tinkoff_file = CFile::GetFileArray($tinkoff['PDF']);
+		$arFile = \Bitrix\Main\FileTable::getList([
+			'filter' => ['EXTERNAL_ID' => $tinkoff_file['EXTERNAL_ID']],
+			'select' => ['ID'],
+		])->fetchAll();
+		
+		foreach ($arFile as $key => $value) {
+			$key = array_search($value['ID'], $crm[$field]);
+			if ($key !== false) {
+				unset($crm[$field][$key]);
+			}
+		}
+		\Bitrix\Crm\LeadTable::update($crm['ID'], [$field => $crm[$field]]);
+	}
+
+	static function DealPaymentAmount ($tinkoff, $filterAndSelectArr) {
+		$field = 'UF_CRM_1573037237058';
+		$tinkoff = self::getList([
+			'filter' => ['ID' => $tinkoff['ID'],],
+		])->fetch();
+		$crm = \Bitrix\Crm\DealTable::getList($filterAndSelectArr)->fetch();
+		$amount = self::crmPaymentConverter($tinkoff, $crm, $field);
+		$update = \Bitrix\Crm\DealTable::update($crm['ID'], [$field => $amount]);
+	}
+
+	static function LeadPaymentAmount ($tinkoff, $filterAndSelectArr) {
+		$field = 'UF_CRM_1597239870';
+		$tinkoff = self::getList([
+			'filter' => ['ID' => $tinkoff['ID'],],
+		])->fetch();
+		$crm = \Bitrix\Crm\LeadTable::getList($filterAndSelectArr)->fetch();
+		$amount = self::crmPaymentConverter($tinkoff, $crm, $field);
+		$update = \Bitrix\Crm\LeadTable::update($crm['ID'], [$field => $amount]);
+	}
+
+	static function crmPaymentConverter ($tinkoff, $crm, $field) {
+		$currency_src = CCurrency::GetList();	
+		while ($currency_item = $currency_src->fetch()) {
+			$currency_list[$currency_item['NUMCODE']] = $currency_item['CURRENCY'];
+		}
+		$tinkoff_currency = $currency_list[$tinkoff['operationCurrencyDigitalCode']];
+		$crm_amount = self::crmPaymentParser($crm[$field]);
+		$payment = CCurrencyRates::ConvertCurrency(
+			$tinkoff['operationAmount'],
+			$tinkoff_currency,
+			$crm_amount['cur'],
+			date('Y-m-d', $tinkoff['operationDate'])
+		);
+		$payment = round($payment, 2);
+		if ($tinkoff['CRM_ID']) {
+			$amount = $crm_amount['sum'] + $payment;
+		} else {
+			if ($payment <= $crm_amount['sum']) {
+				$amount = $crm_amount['sum'] - $payment;
+			} else {
+				$amount = 0;
+			}
+		}
+		return $amount.'|'.$crm_amount['cur'];
 	}
 
 	public static function setPaymentProps ($tinkoff) {
@@ -895,13 +996,22 @@ class TinkoffTable extends DataManager
 			'select' => ['*', 'UF_*'],
 		];
 		if ($arr[0] == 'LEAD') {
+			self::LeadPaymentAmount($tinkoff, $filterAndSelectArr);
 			$crm = self::LeadPaymentAction($filterAndSelectArr);
 			$file = self::LeadPaymentMethod($tinkoff, $crm);
+			if ($file) {
+				self::LeadPaymentBindFile($tinkoff, $crm, $filterAndSelectArr);
+			} elseif (!$file) {
+				self::LeadPaymentUnBindFile($tinkoff, $crm, $filterAndSelectArr);
+			}
 		} elseif ($arr[0] == 'DEAL') {
+			self::DealPaymentAmount($tinkoff, $filterAndSelectArr);
 			$crm = self::DealPaymentAction($filterAndSelectArr);
 			$file = self::DealPaymentMethod($tinkoff, $crm);
 			if ($file) {
 				self::DealPaymentBindFile($tinkoff, $crm, $filterAndSelectArr);
+			} elseif (!$file) {
+				self::DealPaymentUnBindFile($tinkoff, $crm, $filterAndSelectArr);
 			}
 		}
 		return $arr;

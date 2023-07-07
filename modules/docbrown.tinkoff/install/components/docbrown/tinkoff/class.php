@@ -135,6 +135,29 @@ class TinkoffComponent extends CBitrixComponent {
 
 	function operationsList ($arr) {
 		foreach ($arr as $key => $value) {
+
+			if ($value['CRM_ID']) {
+				$actions = [
+					[
+						'text'    => GetMessage('DETACH'),
+						'onclick' => 'Tinkoff.unlinkCrm("'.$value['ID'].'")',
+					],
+					[
+						'text'    => GetMessage('CANCEL'),
+					]
+				];
+			} else {
+				$actions = [
+					[
+						'text'  => GetMessage('LINK'),
+						'onclick' => 'Tinkoff.linkCrm("'.$value['ID'].'")',
+					],
+					[
+						'text'    => GetMessage('CANCEL'),
+					]
+				];
+			}
+
 			$value['operationCurrencyDigitalCode'] = $this->currency_list[$value['operationCurrencyDigitalCode']];
 			$value['operationDate'] = ConvertTimeStamp($value['operationDate'], 'FULL');
 			$value['trxnPostDate'] = ConvertTimeStamp($value['trxnPostDate'], 'FULL');
@@ -143,19 +166,11 @@ class TinkoffComponent extends CBitrixComponent {
 			$value['chargeDate'] = ConvertTimeStamp($value['chargeDate'], 'FULL');
 			$value['docDate'] = ConvertTimeStamp($value['docDate'], 'FULL');
 			$value['CRM_ID'] = $this->generateCrmLink($value['CRM_ID']);
-			$value['PDF'] = '<a href="'.CFile::GetFileArray($value['PDF'])['SRC'].'" download>'.$value['PDF'].'</a>';
+			$value['PDF'] = '<a href="'.CFile::GetFileArray($value['PDF'])['SRC'].'" target="_blank">
+			<div class="ui-icon ui-icon-file-pdf"><i></i></div></a>';
 			$list[] = [
 				'data' => $value,
-				'actions' => [
-					[
-						'text'  => GetMessage('LINK'),
-						'onclick' => 'Tinkoff.linkCrm("'.$value['ID'].'")',
-					],
-					[
-						'text'    => GetMessage('DETACH'),
-						'onclick' => 'Tinkoff.unlinkCrm("'.$value['ID'].'")',
-					]
-				],
+				'actions' => $actions,
 			];
 		}
 		return $list;

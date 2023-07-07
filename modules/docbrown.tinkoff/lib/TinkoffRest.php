@@ -151,23 +151,26 @@ class TinkoffRest {
 
 	public static function saveData ($operations) {
 		foreach ($operations as $key => $value) {
-			$pdf_id = self::pdfGenerator($value);
-			\Bitrix\Docbrown\TinkoffTable::setPaymentProps($value['crm']);
+			$pdf_id = self::pdfGenerator($key, $value);
 			$value['CRM_ID'] = self::checkCrmId($value['crm']);
 			$value['PDF'] = $pdf_id;
 			unset($value['crm']);
 			$add = TinkoffTable::validatedAdd($value);
 			$arr[] = $add;
+			$tinkoff = \Bitrix\Docbrown\TinkoffTable::getList([
+				'filter' => ['ID' => $add,],
+			])->fetch();
+			\Bitrix\Docbrown\TinkoffTable::setPaymentProps($tinkoff);
 		}
 		return $arr;
 	}
 
-	public static function pdfGenerator ($arr) {
+	public static function pdfGenerator ($key, $value) {
 		$payment = new Dompdf();
-		$html = self::htmlGenerator($arr);
+		$html = self::htmlGenerator($value);
 		$payment->loadHtml($html);
 		$payment->render();
-		$tmp_path = $_SERVER['DOCUMENT_ROOT'].'/upload/tmp/invoice.pdf';
+		$tmp_path = $_SERVER['DOCUMENT_ROOT'].'/upload/tmp/rect_'.time().'-'.$key.'.pdf';
 		file_put_contents($tmp_path, $payment->output());
 		$file_arr =  CFile::MakeFileArray($tmp_path);
 		$file_id = CFile::SaveFile(

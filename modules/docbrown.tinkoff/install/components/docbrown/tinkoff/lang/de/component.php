@@ -11,6 +11,7 @@ $MESS['CRM_ID'] = 'CRM_ID';
 $MESS['LINK'] = 'Link zum CRM';
 $MESS['DETACH'] = 'Trennen Sie sich vom CRM';
 $MESS['Synchronization'] = 'Synchronisation';
+$MESS['CANCEL'] = 'STORNIEREN';
 
 $MESS['operationDate'] = 'Datum der Operation';
 $MESS['operationId'] = 'id Operation';
